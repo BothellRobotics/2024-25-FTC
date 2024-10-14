@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /*
@@ -58,13 +60,29 @@ public class TeleOps extends LinearOpMode {
     public DcMotor leftBack = null;
     public DcMotor slideRight = null;
     public DcMotor slideLeft = null;
-
+    public Servo bottomServo;
+    public Servo topServo;
+    public Servo leftServo;
+    public Servo rightServo;
     double clawOffset = 0;
+    private ElapsedTime runtime = new ElapsedTime();
+
 
     public static final double MID_SERVO   =  0.5 ;
     public static final double CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 1.5 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final int    UPPER_LIMIT_ENCODER = 4200 ;
+    static final double INCREMENT   = 0.001;
+
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
 
     @Override
     public void runOpMode() {
@@ -73,6 +91,20 @@ public class TeleOps extends LinearOpMode {
         double drive;
         double turn;
         double max;
+        double bottomServoPos = 0.0;
+        double topServoPos = 0.0;
+        double leftServoPos = 0.0;
+        double rightServoPos = 0.0;
+
+        bottomServo = hardwareMap.get(Servo.class, "bottomServo");
+        topServo = hardwareMap.get(Servo.class, "topServo");
+        leftServo = hardwareMap.get(Servo.class, "leftServo");
+        rightServo = hardwareMap.get(Servo.class, "rightServo");
+
+        bottomServo.setPosition(0.31);
+        topServo.setPosition(0.32);
+        leftServo.setPosition(0.26);
+        rightServo.setPosition(0.0);
 
         // Define and Initialize Motors
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
@@ -90,16 +122,12 @@ public class TeleOps extends LinearOpMode {
 
         slideRight.setDirection(DcMotor.Direction.REVERSE);
         slideLeft.setDirection(DcMotor.Direction.FORWARD);
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
-        // leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Define and initialize ALL installed servos.
-        /*leftClaw  = hardwareMap.get(Servo.class, "left_hand");
-        rightClaw = hardwareMap.get(Servo.class, "right_hand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);*/
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press START.");    //
@@ -140,18 +168,7 @@ public class TeleOps extends LinearOpMode {
             double forwardSpeed = 0.5;
             // Use gamepad left & right Bumpers to open and close the claw
 
-           /* if (gamepad1.right_stick_y > 0) {
-                rightFront.setPower(-0.8);
-                leftFront.setPower(forwardSpeed);
-                rightBack.setPower(forwardSpeed);
-                leftBack.setPower(forwardSpeed);
-            }
-            if (gamepad1.right_stick_y < 0) {
-                rightFront.setPower(0.8);
-                leftFront.setPower(-forwardSpeed);
-                rightBack.setPower(-forwardSpeed);
-                leftBack.setPower(-forwardSpeed);
-            }*/
+
             if (gamepad1.dpad_left) {
                 rightFront.setPower(0.8);
                 leftFront.setPower(-forwardSpeed);
@@ -185,67 +202,255 @@ public class TeleOps extends LinearOpMode {
                 rightBack.setPower(-forwardSpeed);
                 leftBack.setPower(-forwardSpeed);
             }
+
+            if(gamepad1.right_bumper) {
+                encoderDrive(slideLeft, -0.4,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            }
+
+            //Left Slide goes down
+            if(gamepad1.left_bumper) {
+                encoderDrive(slideLeft, -0.4,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            }
+
+            //Right Slide goes up for Right Trigger
+            if(gamepad1.right_trigger > 0.1) {
+                encoderDrive(slideRight, 0.7,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            }
+
+            //Left Slide goes up for Left Trigger
+            if(gamepad1.left_trigger > 0.1) {
+                encoderDrive(slideLeft, 0.625,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            }
 /*
-            //goes down
-            if (gamepad1.right_bumper) {
-                slideRight.setPower(-0.4);
-                telemetry.addData("Currently at",  " at %7d ", slideRight.getCurrentPosition());
-                telemetry.update();
-            }
-            //goes down
-            if (gamepad1.left_bumper) {
-                slideLeft.setPower(-0.4);
-                telemetry.addData("Currently at",  " at %7d", slideLeft.getCurrentPosition());
-                telemetry.update();
-            }
+            if(gamepad1.x){
 
-            //goes up
-            if (gamepad1.right_trigger > 0.5) {
-                slideRight.setPower(0.7);
-                telemetry.addData("Currently at",  " at %7d ", slideRight.getCurrentPosition());
-                telemetry.update();
+                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 43, 10.0);
             }
+            if(gamepad1.b){
 
-            //goes up
-            if (gamepad1.left_trigger > 0.5) {
-                slideLeft.setPower(0.625);
-                telemetry.addData("Currently at",  " at %7d", slideLeft.getCurrentPosition());
-                telemetry.update();
-            }*/
+                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 43, 10.0);
+            }
+*/
 
-            if (gamepad1.y) {
-                slideLeft.setPower(0.625);
-                slideRight.setPower(0.7);
+
+            if (gamepad2.b) {
+                bottomServoPos = bottomServo.getPosition();
+                bottomServoPos += INCREMENT;
+                if(bottomServoPos >= 0.5)
+                    bottomServoPos = 0.5;
+                if(topServo.getPosition() > 0.33)
+                    bottomServo.setPosition(bottomServoPos);
+                else
+                    bottomServo.setPosition(0.31);
+            }
+            if (gamepad2.x){
+                bottomServoPos = bottomServo.getPosition();
+                bottomServoPos -= INCREMENT;
+                if(bottomServoPos <= 0.0)
+                    bottomServoPos = 0.0;
+
+                bottomServo.setPosition(bottomServoPos);
             }
 
-            if (gamepad1.a) {
-                slideLeft.setPower(-0.4);
-                slideRight.setPower(-0.4);
+            if (gamepad2.a) {   //Top Servo going down
+                topServoPos = topServo.getPosition();
+                topServoPos += INCREMENT;
+                if(topServoPos >= 0.375)
+                    topServoPos = 0.375;
+                topServo.setPosition(topServoPos);
+            }
+            if (gamepad2.y){    //Top Servo going UP
+                topServoPos = topServo.getPosition();
+                topServoPos -= INCREMENT;
+                if(topServoPos <= 0.32)
+                    topServoPos = 0.32;
+
+                topServo.setPosition(topServoPos);
+            }
+
+            if(gamepad2.right_trigger > 0) {  //Right Servo Opening
+                rightServoPos = rightServo.getPosition();
+                rightServoPos -= INCREMENT;
+                if(rightServoPos <= 0.0)
+                    rightServoPos = 0.0;
+
+                rightServo.setPosition(rightServoPos);
+            }
+
+            if(gamepad2.left_trigger > 0) { //Left Servo Opening
+                leftServoPos = leftServo.getPosition();
+                leftServoPos += INCREMENT;
+                if(leftServoPos >= 0.26)
+                    leftServoPos = 0.26;
+                leftServo.setPosition(leftServoPos);
+            }
+
+            if(gamepad2.right_bumper) { //Right Servo Closing
+                rightServoPos = rightServo.getPosition();
+                rightServoPos += INCREMENT;
+                if(rightServoPos >= 0.06)
+                    rightServoPos = 0.06;
+
+                rightServo.setPosition(rightServoPos);
+            }
+
+            if(gamepad2.left_bumper) {  //Left Servo Closing
+                leftServoPos = leftServo.getPosition();
+                leftServoPos -= INCREMENT;
+                if(leftServoPos <= 0.19)
+                    leftServoPos = 0.19;
+
+                leftServo.setPosition(leftServoPos);
+            }
+
+            if (gamepad1.left_stick_button) {
+                // Keep stepping up until we hit the max value.
+                leftServoPos = leftServo.getPosition();
+                leftServoPos += INCREMENT;
+                if(leftServoPos >= 0.07)
+                    leftServoPos = 0.07;
+                leftServo.setPosition(leftServoPos);
+            }
+            if (gamepad1.right_stick_button){
+                rightServoPos = rightServo.getPosition();
+                rightServoPos -= INCREMENT;
+                if(rightServoPos <= 0.0)
+                    rightServoPos = 0.0;
+
+                rightServo.setPosition(rightServoPos);
             }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-            /*leftClaw.setPosition(MID_SERVO + clawOffset);
-            rightClaw.setPosition(MID_SERVO - clawOffset);*/
-
-            // Use gamepad buttons to move arm up (Y) and down (A)
-           /* if (gamepad1.y)
-                rightFront.setPower(ARM_UP_POWER);
-            else if (gamepad1.a)
-                rightFront.setPower(ARM_DOWN_POWER);
-            else
-                rightFront.setPower(0.0);*/
 
             // Send telemetry message to signify robot running;
             telemetry.addData("Left Slide Currently at",  " at %7d", slideLeft.getCurrentPosition());
             telemetry.addData("Right Slide Currently at",  " at %7d ", slideRight.getCurrentPosition());
-            telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-            telemetry.addData("left",  "%.2f", left);
+
+            telemetry.addData("claw",  "  bottomServoPos  = %.2f", bottomServo.getPosition());
+            telemetry.addData("topServoPos = ",  "%.2f", topServo.getPosition());
             telemetry.addData("right", "%.2f", right);
+
+            telemetry.addData("Left Servo Position",  " at %7f", leftServo.getPosition());
+            telemetry.addData("Right Servo Position",  " at %7f", rightServo.getPosition());
+
             telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
+        }
+    }
+    public void encoderDrive(DcMotor slide, double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newSlideTarget;
+        //int newRightTarget;
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if(speed >= 0)
+                newSlideTarget = slide.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            else
+                newSlideTarget = 0;
+            slide.setTargetPosition(newSlideTarget);
+
+
+            // Turn On RUN_TO_POSITION
+            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            slide.setPower(Math.abs(speed));
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (slide.isBusy())) {
+
+                // Display it for the driver.
+
+                telemetry.addData("Currently at",  " at %7d",
+                        slide.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            slide.setPower(0);
+
+
+            // Turn off RUN_TO_POSITION
+            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+            sleep(250);   // optional pause after each move.
+        }
+    }
+
+    public void doubleEncoderDrive(DcMotor slideLeft,DcMotor slideRight,
+                                   double leftSpeed, double rightSpeed,
+                             double heightInches, double timeoutS) {
+        int newSlideTarget;
+
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if(leftSpeed >= 0) {
+                newSlideTarget = slideLeft.getCurrentPosition() + (int) (heightInches * COUNTS_PER_INCH);
+            } else {
+                newSlideTarget = 0;
+            }
+            if(newSlideTarget > UPPER_LIMIT_ENCODER){
+                newSlideTarget = UPPER_LIMIT_ENCODER;
+            }
+            slideLeft.setTargetPosition(newSlideTarget);
+            slideRight.setTargetPosition(newSlideTarget);
+            slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            slideLeft.setPower(Math.abs(leftSpeed));
+            slideRight.setPower(Math.abs(rightSpeed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    ((slideRight.isBusy()) || (slideLeft.isBusy()))) {
+
+                // Display it for the driver.
+
+                telemetry.addData("Currently left slide at",  " at %7d",
+                        slideLeft.getCurrentPosition());
+                telemetry.addData("Currently right slide at",  " at %7d",
+                        slideRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            slideLeft.setPower(0);
+            slideRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move.
         }
     }
 }
