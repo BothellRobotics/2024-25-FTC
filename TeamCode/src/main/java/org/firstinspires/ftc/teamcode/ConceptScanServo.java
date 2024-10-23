@@ -74,11 +74,9 @@ public class ConceptScanServo extends LinearOpMode {
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
 
-
         waitForStart();
 
         double bottomServoPos = 0.0;
-        // Scan servo till stop pressed.
         while(opModeIsActive()){
 
             // slew the servo, according to the rampUp (direction) variable.
