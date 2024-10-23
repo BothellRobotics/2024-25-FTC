@@ -62,9 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Auto Blue", group="Robot")
-//@Disabled
-public class AutoBlueLeagueOne
-        extends LinearOpMode {
+public class AutoBlueLeagueOne extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
