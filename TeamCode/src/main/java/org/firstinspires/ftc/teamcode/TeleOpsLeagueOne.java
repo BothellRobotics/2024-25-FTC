@@ -93,10 +93,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         boolean isSlideRaised = false;
-        double left;
-        double right;
-        double drive;
-        double turn;
+
         double max;
         double bottomServoPos = 0.0;
         double topServoPos = 0.0;
