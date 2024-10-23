@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -49,9 +48,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOpsBeginner", group="TeleOps")
+@TeleOp(name="TeleOps League 1", group="TeleOps")
 //@Disabled
-public class TeleOps extends LinearOpMode {
+public class TeleOpsLeagueOne extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -79,7 +78,7 @@ public class TeleOps extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final int    UPPER_LIMIT_ENCODER = 4200 ;
-    static final double INCREMENT   = 0.001;
+    static final double INCREMENT   = 0.003;
 
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
@@ -167,7 +166,7 @@ public class TeleOps extends LinearOpMode {
             slideRight.setPower(0);
 
             double forwardSpeed = 0.5;
-            // Use gamepad left & right Bumpers to open and close the claw
+
 
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
@@ -179,14 +178,48 @@ public class TeleOps extends LinearOpMode {
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
 
-            if(gamepad2.left_trigger > 0.1 ){
+            if(gamepad1.dpad_up) {
+                leftFrontDrive.setPower(0.2);
+                leftBackDrive.setPower(0.2);
+                rightFrontDrive.setPower(0.2);
+                rightBackDrive.setPower(0.2);
+            }
+
+            if(gamepad1.dpad_down) {
+                leftFrontDrive.setPower(-0.2);
+                leftBackDrive.setPower(-0.2);
+                rightFrontDrive.setPower(-0.2);
+                rightBackDrive.setPower(-0.2);
+            }
+
+            if(gamepad1.dpad_left) {
+                leftFrontDrive.setPower(-0.2);
+                leftBackDrive.setPower(0.2);
+                rightFrontDrive.setPower(0.2);
+                rightBackDrive.setPower(-0.2);
+            }
+
+            if(gamepad1.dpad_left) {
+                leftFrontDrive.setPower(0.2);
+                leftBackDrive.setPower(-0.2);
+                rightFrontDrive.setPower(-0.2);
+                rightBackDrive.setPower(0.2);
+            }
+
+            if(gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1) {
+                leftFrontDrive.setPower(0.0);
+                leftBackDrive.setPower(0.0);
+                rightFrontDrive.setPower(0.0);
+                rightBackDrive.setPower(0.0);
+            }
+            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.36 ){
                 //Raise the slide
-                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 27, 10.0);
+                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
                 isSlideRaised = true;
             }
             if(gamepad2.right_trigger > 0.1){
 
-                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 27, 10.0);
+                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);
                 isSlideRaised = false;
                //Lower the slide
             }
@@ -216,14 +249,22 @@ public class TeleOps extends LinearOpMode {
                 //Move attachment to left
             }
 
-            if (gamepad2.a) {   //Top Servo going down
+            if (gamepad2.a) {   //Top Servo going down to pickup position
                 topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
-                if(topServoPos >= 0.385)
-                    topServoPos = 0.385;
+                if(topServoPos >= 0.4)
+                    topServoPos = 0.4;
                 topServo.setPosition(topServoPos);
             }
-            if (gamepad2.y){    //Top Servo going UP
+            //top servo hovers over the block
+            if (gamepad2.dpad_down){
+                topServoPos = topServo.getPosition();
+                topServoPos += INCREMENT;
+                if(topServoPos >= 0.38)
+                    topServoPos = 0.38;
+                topServo.setPosition(topServoPos);
+            }
+             if (gamepad2.y){    //Top Servo going UP
                 topServoPos = topServo.getPosition();
                 topServoPos -= INCREMENT;
                 if(topServoPos <= 0.32)
@@ -233,16 +274,13 @@ public class TeleOps extends LinearOpMode {
                 topServo.setPosition(topServoPos);
             }
 
-            if(gamepad2.dpad_right) {  //Right Servo Opening
+            if(gamepad2.left_stick_button) {  //Opening
                 rightServoPos = rightServo.getPosition();
                 rightServoPos -= INCREMENT;
                 if(rightServoPos <= 0.0)
                     rightServoPos = 0.0;
 
                 rightServo.setPosition(rightServoPos);
-            }
-
-            if(gamepad2.dpad_left) { //Left Servo Opening
                 leftServoPos = leftServo.getPosition();
                 leftServoPos += INCREMENT;
                 if(leftServoPos >= 0.26)
@@ -250,16 +288,31 @@ public class TeleOps extends LinearOpMode {
                 leftServo.setPosition(leftServoPos);
             }
 
-            if(gamepad2.right_bumper) { //Right Servo Closing
+           /* if(gamepad2.dpad_left) { //Left Servo Opening
+                leftServoPos = leftServo.getPosition();
+                leftServoPos += INCREMENT;
+                if(leftServoPos >= 0.26)
+                    leftServoPos = 0.26;
+                leftServo.setPosition(leftServoPos);
+            }*/
+
+            if(gamepad2.right_stick_button) { // Closing
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
-                if(rightServoPos >= 0.06)
-                    rightServoPos = 0.06;
+                if(rightServoPos >= 0.08)
+                    rightServoPos = 0.08;
 
                 rightServo.setPosition(rightServoPos);
+                leftServoPos = leftServo.getPosition();
+                leftServoPos -= INCREMENT;
+                if(leftServoPos <= 0.19)
+                    leftServoPos = 0.19;
+
+                leftServo.setPosition(leftServoPos);
             }
 
-            if(gamepad2.left_bumper) {  //Left Servo Closing
+
+           if(gamepad2.dpad_left) {  //Left Servo Closing
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
                 if(leftServoPos <= 0.19)
@@ -284,7 +337,14 @@ public class TeleOps extends LinearOpMode {
 
                 rightServo.setPosition(rightServoPos);
             }
+            if(gamepad2.dpad_right) {  //Right Servo Closing
+                rightServoPos = rightServo.getPosition();
+                rightServoPos -= INCREMENT;
+                if(rightServoPos >= 0.08)
+                    rightServoPos = 0.08;
 
+                rightServo.setPosition(rightServoPos);
+            }
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 

@@ -1,0 +1,541 @@
+warning: LF will be replaced by CRLF in FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/BasicOmniOpMode_Linear.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/build.gradle.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/AutoBlueLeagueOne.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SensorLimelight3A.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOpsLeagueOne.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java.
+The file will have its original line endings in your working directory
+[1mdiff --git a/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/BasicOmniOpMode_Linear.java b/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/BasicOmniOpMode_Linear.java[m
+[1mindex 1d14dfb..905c89e 100644[m
+[1m--- a/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/BasicOmniOpMode_Linear.java[m
+[1m+++ b/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/BasicOmniOpMode_Linear.java[m
+[36m@@ -63,8 +63,8 @@[m [mimport com.qualcomm.robotcore.util.ElapsedTime;[m
+  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list[m
+  */[m
+ [m
+[31m-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")[m
+[31m-@Disabled[m
+[32m+[m[32m@TeleOp(name="Basic: Basic Omni Linear OpMode", group="Linear OpMode")[m
+[32m+[m[32m//@Disabled[m
+ public class BasicOmniOpMode_Linear extends LinearOpMode {[m
+ [m
+     // Declare OpMode members for each of the 4 motors.[m
+[36m@@ -79,10 +79,10 @@[m [mpublic class BasicOmniOpMode_Linear extends LinearOpMode {[m
+ [m
+         // Initialize the hardware variables. Note that the strings used here must correspond[m
+         // to the names assigned during the robot configuration step on the DS or RC devices.[m
+[31m-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");[m
+[31m-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");[m
+[31m-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");[m
+[31m-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");[m
+[32m+[m[32m        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");[m
+[32m+[m[32m        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");[m
+[32m+[m[32m        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");[m
+[32m+[m[32m        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");[m
+ [m
+         // ########################################################################################[m
+         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!![m
+[36m@@ -94,7 +94,7 @@[m [mpublic class BasicOmniOpMode_Linear extends LinearOpMode {[m
+         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.[m
+         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward[m
+         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.[m
+[31m-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);[m
+[32m+[m[32m        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);[m
+         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);[m
+         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);[m
+         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);[m
+[1mdiff --git a/TeamCode/build.gradle b/TeamCode/build.gradle[m
+[1mindex 878287a..9a01ce5 100644[m
+[1m--- a/TeamCode/build.gradle[m
+[1m+++ b/TeamCode/build.gradle[m
+[36m@@ -23,6 +23,17 @@[m [mandroid {[m
+     }[m
+ }[m
+ [m
+[32m+[m[32mrepositories {[m
+[32m+[m[32m    maven {[m
+[32m+[m[32m        url = 'https://maven.brott.dev/'[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[32m+[m
+ dependencies {[m
+     implementation project(':FtcRobotController')[m
+[32m+[m
+[32m+[m[32m    implementation "com.acmerobotics.roadrunner:ftc:0.1.14"[m
+[32m+[m[32m    implementation "com.acmerobotics.roadrunner:core:1.0.0"[m
+[32m+[m[32m    implementation "com.acmerobotics.roadrunner:actions:1.0.0"[m
+[32m+[m[32m    implementation "com.acmerobotics.dashboard:dashboard:0.4.16"[m
+ }[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/AutoBlueLeagueOne.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/AutoBlueLeagueOne.java[m
+[1mindex 386a444..8749272 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/AutoBlueLeagueOne.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/AutoBlueLeagueOne.java[m
+[36m@@ -30,7 +30,6 @@[m
+ package org.firstinspires.ftc.teamcode;[m
+ [m
+ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;[m
+[31m-import com.qualcomm.robotcore.eventloop.opmode.Disabled;[m
+ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;[m
+ import com.qualcomm.robotcore.hardware.DcMotor;[m
+ import com.qualcomm.robotcore.hardware.Servo;[m
+[36m@@ -62,9 +61,10 @@[m [mimport com.qualcomm.robotcore.util.ElapsedTime;[m
+  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list[m
+  */[m
+ [m
+[31m-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")[m
+[32m+[m[32m@Autonomous(name="Auto Blue", group="Robot")[m
+ //@Disabled[m
+[31m-public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {[m
+[32m+[m[32mpublic class AutoBlueLeagueOne[m
+[32m+[m[32m        extends LinearOpMode {[m
+ [m
+     /* Declare OpMode members. */[m
+     private DcMotor leftFrontDrive = null;[m
+[36m@@ -93,6 +93,8 @@[m [mpublic class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {[m
+                                                       (WHEEL_DIAMETER_INCHES * 3.1415);[m
+     static final double     DRIVE_SPEED             = 0.6;[m
+     static final double     TURN_SPEED              = 0.5;[m
+[32m+[m[32m    static final int    UPPER_LIMIT_ENCODER = 4200 ;[m
+[32m+[m[32m    static final double INCREMENT   = 0.003;[m
+ [m
+     @Override[m
+     public void runOpMode() {[m
+[36m@@ -103,6 +105,16 @@[m [mpublic class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {[m
+         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");[m
+         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");[m
+         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");[m
+[32m+[m[32m        boolean isSlideRaised = false;[m
+[32m+[m[32m        double left;[m
+[32m+[m[32m        double right;[m
+[32m+[m[32m        double drive;[m
+[32m+[m[32m        double turn;[m
+[32m+[m[32m        double max;[m
+[32m+[m[32m        double bottomServoPos = 0.0;[m
+[32m+[m[32m        double topServoPos = 0.0;[m
+[32m+[m[32m        double leftServoPos = 0.0;[m
+[32m+[m[32m        double rightServoPos = 0.0;[m
+         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.[m
+         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.[m
+         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips[m
+[36m@@ -136,8 +148,29 @@[m [mpublic class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {[m
+         // Step through each leg of the path,[m
+         // Note: Reverse movement is obtained by setting a negative distance (not speed)[m
+         encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout[m
+[31m-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout[m
+[31m-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout[m
+[32m+[m
+[32m+[m[32m        doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);[m
+[32m+[m[32m        isSlideRaised = true;[m
+[32m+[m
+[32m+[m[32m        rightServoPos = rightServo.getPosition();[m
+[32m+[m[32m        rightServoPos -= INCREMENT;[m
+[32m+[m[32m        if(rightServoPos <= 0.0)[m
+[32m+[m[32m            rightServoPos = 0.0;[m
+[32m+[m
+[32m+[m[32m        rightServo.setPosition(rightServoPos);[m
+[32m+[m[32m        leftServoPos = leftServo.getPosition();[m
+[32m+[m[32m        leftServoPos += INCREMENT;[m
+[32m+[m[32m        if(leftServoPos >= 0.26)[m
+[32m+[m[32m            leftServoPos = 0.26;[m
+[32m+[m[32m        leftServo.setPosition(leftServoPos);[m
+[32m+[m
+[32m+[m
+[32m+[m[32m        encoderDrive(0.2,-0.5, -0.5, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout[m
+[32m+[m
+[32m+[m[32m        doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);[m
+[32m+[m[32m        isSlideRaised = false;[m
+[32m+[m
+[32m+[m[32m        encoderDrive(DRIVE_SPEED, -30, -30, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout[m
+ [m
+         telemetry.addData("Path", "Complete");[m
+         telemetry.update();[m
+[36m@@ -220,4 +253,70 @@[m [mpublic class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {[m
+             sleep(250);   // optional pause after each move.[m
+         }[m
+     }[m
+[32m+[m
+[32m+[m[32m    public void doubleEncoderDrive(DcMotor slideLeft,DcMotor slideRight,[m
+[32m+[m[32m                                   double leftSpeed, double rightSpeed,[m
+[32m+[m[32m                                   double heightInches, double timeoutS) {[m
+[32m+[m[32m        int newSlideTarget;[m
+[32m+[m
+[32m+[m[32m        // Ensure that the OpMode is still active[m
+[32m+[m[32m        if (opModeIsActive()) {[m
+[32m+[m
+[32m+[m[32m            // Determine new target position, and pass to motor controller[m
+[32m+[m[32m            if(leftSpeed >= 0) {[m
+[32m+[m[32m                newSlideTarget = slideLeft.getCurrentPosition() + (int) (heightInches * COUNTS_PER_INCH);[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m                newSlideTarget = 0;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            if(newSlideTarget > UPPER_LIMIT_ENCODER){[m
+[32m+[m[32m                newSlideTarget = UPPER_LIMIT_ENCODER;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            slideLeft.setTargetPosition(newSlideTarget);[m
+[32m+[m[32m            slideRight.setTargetPosition(newSlideTarget);[m
+[32m+[m[32m            slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);[m
+[32m+[m[32m            slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);[m
+[32m+[m
+[32m+[m[32m            // reset the timeout time and start motion.[m
+[32m+[m[32m            runtime.reset();[m
+[32m+[m[32m            slideLeft.setPower(Math.abs(leftSpeed));[m
+[32m+[m[32m            slideRight.setPower(Math.abs(rightSpeed));[m
+[32m+[m
+[32m+[m[32m            // keep looping while we are still active, and there is time left, and both motors are running.[m
+[32m+[m[32m            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits[m
+[32m+[m[32m            // its target position, the motion will stop.  This is "safer" in the event that the robot will[m
+[32m+[m[32m            // always end the motion as soon as possible.[m
+[32m+[m[32m            // However, if you require that BOTH motors have finished their moves before the robot continues[m
+[32m+[m[32m            // onto the next step, use (isBusy() || isBusy()) in the loop test.[m
+[32m+[m[32m            while (opModeIsActive() &&[m
+[32m+[m[32m                    (runtime.seconds() < timeoutS) &&[m
+[32m+[m[32m                    ((slideRight.isBusy()) || (slideLeft.isBusy()))) {[m
+[32m+[m[32m                telemetry.addData("Currently left slide is",  " at %b",[m
+[32m+[m[32m                        slideLeft.isBusy());[m
+[32m+[m[32m                telemetry.addData("Currently right slide is",  " at %b",[m
+[32m+[m[32m                        slideRight.isBusy());[m
+[32m+[m[32m                // Display it for the driver.[m
+[32m+[m
+[32m+[m[32m                telemetry.addData("Currently left slide at",  " at %7d",[m
+[32m+[m[32m                        slideLeft.getCurrentPosition());[m
+[32m+[m[32m                telemetry.addData("Currently right slide at",  " at %7d",[m
+[32m+[m[32m                        slideRight.getCurrentPosition());[m
+[32m+[m[32m                telemetry.update();[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            telemetry.addData("Exited for loop, left side at",  " at %7d",[m
+[32m+[m[32m                    slideLeft.getCurrentPosition());[m
+[32m+[m[32m            telemetry.addData("Exited for loop, right side at",  " at %7d",[m
+[32m+[m[32m                    slideRight.getCurrentPosition());[m
+[32m+[m[32m            telemetry.update();[m
+[32m+[m[32m            // Stop all motion;[m
+[32m+[m[32m            slideLeft.setPower(0);[m
+[32m+[m[32m            slideRight.setPower(0);[m
+[32m+[m
+[32m+[m[32m            // Turn off RUN_TO_POSITION[m
+[32m+[m[32m            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);[m
+[32m+[m[32m            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);[m
+[32m+[m
+[32m+[m[32m            //sleep(250);   // optional pause after each move.[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+ }[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java[m
+[1mindex 233f653..658d09c 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java[m
+[36m@@ -5,7 +5,9 @@[m [mimport androidx.annotation.NonNull;[m
+ import com.acmerobotics.dashboard.canvas.Canvas;[m
+ import com.acmerobotics.dashboard.config.Config;[m
+ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;[m
+[31m-import com.acmerobotics.roadrunner.*;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.AccelConstraint;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.Action;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.Actions;[m
+ import com.acmerobotics.roadrunner.AngularVelConstraint;[m
+ import com.acmerobotics.roadrunner.DualNum;[m
+ import com.acmerobotics.roadrunner.HolonomicController;[m
+[36m@@ -14,13 +16,20 @@[m [mimport com.acmerobotics.roadrunner.MinVelConstraint;[m
+ import com.acmerobotics.roadrunner.MotorFeedforward;[m
+ import com.acmerobotics.roadrunner.Pose2d;[m
+ import com.acmerobotics.roadrunner.Pose2dDual;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.PoseVelocity2d;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.PoseVelocity2dDual;[m
+ import com.acmerobotics.roadrunner.ProfileAccelConstraint;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.ProfileParams;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.Rotation2d;[m
+ import com.acmerobotics.roadrunner.Time;[m
+ import com.acmerobotics.roadrunner.TimeTrajectory;[m
+ import com.acmerobotics.roadrunner.TimeTurn;[m
+ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.TrajectoryBuilderParams;[m
+ import com.acmerobotics.roadrunner.TurnConstraints;[m
+ import com.acmerobotics.roadrunner.Twist2dDual;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.Vector2d;[m
+[32m+[m[32mimport com.acmerobotics.roadrunner.Vector2dDual;[m
+ import com.acmerobotics.roadrunner.VelConstraint;[m
+ import com.acmerobotics.roadrunner.ftc.DownsampledWriter;[m
+ import com.acmerobotics.roadrunner.ftc.Encoder;[m
+[36m@@ -34,7 +43,6 @@[m [mimport com.qualcomm.hardware.lynx.LynxModule;[m
+ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;[m
+ import com.qualcomm.robotcore.hardware.DcMotor;[m
+ import com.qualcomm.robotcore.hardware.DcMotorEx;[m
+[31m-import com.qualcomm.robotcore.hardware.DcMotorSimple;[m
+ import com.qualcomm.robotcore.hardware.HardwareMap;[m
+ import com.qualcomm.robotcore.hardware.IMU;[m
+ import com.qualcomm.robotcore.hardware.VoltageSensor;[m
+[36m@@ -46,7 +54,6 @@[m [mimport org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;[m
+ import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;[m
+ import org.firstinspires.ftc.teamcode.messages.PoseMessage;[m
+ [m
+[31m-import java.lang.Math;[m
+ import java.util.Arrays;[m
+ import java.util.LinkedList;[m
+ import java.util.List;[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SensorLimelight3A.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SensorLimelight3A.java[m
+[1mindex 6c1f702..5f28ed4 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SensorLimelight3A.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SensorLimelight3A.java[m
+[36m@@ -30,7 +30,7 @@[m [mCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR[m
+ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF[m
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.[m
+ */[m
+[31m-package org.firstinspires.ftc.robotcontroller.external.samples;[m
+[32m+[m[32mpackage org.firstinspires.ftc.teamcode;[m
+ [m
+ import com.qualcomm.hardware.limelightvision.LLResult;[m
+ import com.qualcomm.hardware.limelightvision.LLResultTypes;[m
+[36m@@ -67,7 +67,7 @@[m [mimport java.util.List;[m
+  *   below the name of the Limelight on the top level configuration screen.[m
+  */[m
+ @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")[m
+[31m-@Disabled[m
+[32m+[m[32m//@Disabled[m
+ public class SensorLimelight3A extends LinearOpMode {[m
+ [m
+     private Limelight3A limelight;[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java[m
+[1mindex e833b92..6aab7aa 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java[m
+[36m@@ -43,7 +43,6 @@[m [mimport com.qualcomm.hardware.lynx.LynxModule;[m
+ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;[m
+ import com.qualcomm.robotcore.hardware.DcMotor;[m
+ import com.qualcomm.robotcore.hardware.DcMotorEx;[m
+[31m-import com.qualcomm.robotcore.hardware.DcMotorSimple;[m
+ import com.qualcomm.robotcore.hardware.HardwareMap;[m
+ import com.qualcomm.robotcore.hardware.VoltageSensor;[m
+ [m
+[36m@@ -244,7 +243,7 @@[m [mpublic final class TankDrive {[m
+ [m
+         voltageSensor = hardwareMap.voltageSensor.iterator().next();[m
+ [m
+[31m-        localizer = new TankDrive.DriveLocalizer();[m
+[32m+[m[32m        localizer = new DriveLocalizer();[m
+ [m
+         FlightRecorder.write("TANK_PARAMS", PARAMS);[m
+     }[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOpsLeagueOne.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOpsLeagueOne.java[m
+[1mindex 9275b2b..519c1e8 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOpsLeagueOne.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOpsLeagueOne.java[m
+[36m@@ -32,7 +32,6 @@[m [mpackage org.firstinspires.ftc.teamcode;[m
+ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;[m
+ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;[m
+ import com.qualcomm.robotcore.hardware.DcMotor;[m
+[31m-import com.qualcomm.robotcore.hardware.DcMotorSimple;[m
+ import com.qualcomm.robotcore.hardware.Servo;[m
+ import com.qualcomm.robotcore.util.ElapsedTime;[m
+ import com.qualcomm.robotcore.util.Range;[m
+[36m@@ -49,9 +48,9 @@[m [mimport com.qualcomm.robotcore.util.Range;[m
+  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list[m
+  */[m
+ [m
+[31m-@TeleOp(name="TeleOpsBeginner", group="TeleOps")[m
+[32m+[m[32m@TeleOp(name="TeleOps League 1", group="TeleOps")[m
+ //@Disabled[m
+[31m-public class TeleOps extends LinearOpMode {[m
+[32m+[m[32mpublic class TeleOpsLeagueOne extends LinearOpMode {[m
+ [m
+     /* Declare OpMode members. */[m
+     private DcMotor leftFrontDrive = null;[m
+[36m@@ -79,7 +78,7 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /[m
+             (WHEEL_DIAMETER_INCHES * 3.1415);[m
+     static final int    UPPER_LIMIT_ENCODER = 4200 ;[m
+[31m-    static final double INCREMENT   = 0.001;[m
+[32m+[m[32m    static final double INCREMENT   = 0.003;[m
+ [m
+     static final double     DRIVE_SPEED             = 0.6;[m
+     static final double     TURN_SPEED              = 0.5;[m
+[36m@@ -167,7 +166,7 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+             slideRight.setPower(0);[m
+ [m
+             double forwardSpeed = 0.5;[m
+[31m-            // Use gamepad left & right Bumpers to open and close the claw[m
+[32m+[m
+ [m
+             leftFrontDrive.setPower(leftFrontPower);[m
+             rightFrontDrive.setPower(rightFrontPower);[m
+[36m@@ -179,14 +178,48 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);[m
+             telemetry.update();[m
+ [m
+[31m-            if(gamepad2.left_trigger > 0.1 ){[m
+[32m+[m[32m            if(gamepad1.dpad_up) {[m
+[32m+[m[32m                leftFrontDrive.setPower(0.2);[m
+[32m+[m[32m                leftBackDrive.setPower(0.2);[m
+[32m+[m[32m                rightFrontDrive.setPower(0.2);[m
+[32m+[m[32m                rightBackDrive.setPower(0.2);[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if(gamepad1.dpad_down) {[m
+[32m+[m[32m                leftFrontDrive.setPower(-0.2);[m
+[32m+[m[32m                leftBackDrive.setPower(-0.2);[m
+[32m+[m[32m                rightFrontDrive.setPower(-0.2);[m
+[32m+[m[32m                rightBackDrive.setPower(-0.2);[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if(gamepad1.dpad_left) {[m
+[32m+[m[32m                leftFrontDrive.setPower(-0.2);[m
+[32m+[m[32m                leftBackDrive.setPower(0.2);[m
+[32m+[m[32m                rightFrontDrive.setPower(0.2);[m
+[32m+[m[32m                rightBackDrive.setPower(-0.2);[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if(gamepad1.dpad_left) {[m
+[32m+[m[32m                leftFrontDrive.setPower(0.2);[m
+[32m+[m[32m                leftBackDrive.setPower(-0.2);[m
+[32m+[m[32m                rightFrontDrive.setPower(-0.2);[m
+[32m+[m[32m                rightBackDrive.setPower(0.2);[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if(gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1) {[m
+[32m+[m[32m                leftFrontDrive.setPower(0.0);[m
+[32m+[m[32m                leftBackDrive.setPower(0.0);[m
+[32m+[m[32m                rightFrontDrive.setPower(0.0);[m
+[32m+[m[32m                rightBackDrive.setPower(0.0);[m
+[32m+[m[32m            }[m
+[32m+[m[32m            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.36 ){[m
+                 //Raise the slide[m
+[31m-                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 27, 10.0);[m
+[32m+[m[32m                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);[m
+                 isSlideRaised = true;[m
+             }[m
+             if(gamepad2.right_trigger > 0.1){[m
+ [m
+[31m-                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 27, 10.0);[m
+[32m+[m[32m                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);[m
+                 isSlideRaised = false;[m
+                //Lower the slide[m
+             }[m
+[36m@@ -216,14 +249,22 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+                 //Move attachment to left[m
+             }[m
+ [m
+[31m-            if (gamepad2.a) {   //Top Servo going down[m
+[32m+[m[32m            if (gamepad2.a) {   //Top Servo going down to pickup position[m
+[32m+[m[32m                topServoPos = topServo.getPosition();[m
+[32m+[m[32m                topServoPos += INCREMENT;[m
+[32m+[m[32m                if(topServoPos >= 0.4)[m
+[32m+[m[32m                    topServoPos = 0.4;[m
+[32m+[m[32m                topServo.setPosition(topServoPos);[m
+[32m+[m[32m            }[m
+[32m+[m[32m            //top servo hovers over the block[m
+[32m+[m[32m            if (gamepad2.dpad_down){[m
+                 topServoPos = topServo.getPosition();[m
+                 topServoPos += INCREMENT;[m
+[31m-                if(topServoPos >= 0.385)[m
+[31m-                    topServoPos = 0.385;[m
+[32m+[m[32m                if(topServoPos >= 0.38)[m
+[32m+[m[32m                    topServoPos = 0.38;[m
+                 topServo.setPosition(topServoPos);[m
+             }[m
+[31m-            if (gamepad2.y){    //Top Servo going UP[m
+[32m+[m[32m             if (gamepad2.y){    //Top Servo going UP[m
+                 topServoPos = topServo.getPosition();[m
+                 topServoPos -= INCREMENT;[m
+                 if(topServoPos <= 0.32)[m
+[36m@@ -233,33 +274,45 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+                 topServo.setPosition(topServoPos);[m
+             }[m
+ [m
+[31m-            if(gamepad2.dpad_right) {  //Right Servo Opening[m
+[32m+[m[32m            if(gamepad2.left_stick_button) {  //Opening[m
+                 rightServoPos = rightServo.getPosition();[m
+                 rightServoPos -= INCREMENT;[m
+                 if(rightServoPos <= 0.0)[m
+                     rightServoPos = 0.0;[m
+ [m
+                 rightServo.setPosition(rightServoPos);[m
+[32m+[m[32m                leftServoPos = leftServo.getPosition();[m
+[32m+[m[32m                leftServoPos += INCREMENT;[m
+[32m+[m[32m                if(leftServoPos >= 0.26)[m
+[32m+[m[32m                    leftServoPos = 0.26;[m
+[32m+[m[32m                leftServo.setPosition(leftServoPos);[m
+             }[m
+ [m
+[31m-            if(gamepad2.dpad_left) { //Left Servo Opening[m
+[32m+[m[32m           /* if(gamepad2.dpad_left) { //Left Servo Opening[m
+                 leftServoPos = leftServo.getPosition();[m
+                 leftServoPos += INCREMENT;[m
+                 if(leftServoPos >= 0.26)[m
+                     leftServoPos = 0.26;[m
+                 leftServo.setPosition(leftServoPos);[m
+[31m-            }[m
+[32m+[m[32m            }*/[m
+ [m
+[31m-            if(gamepad2.right_bumper) { //Right Servo Closing[m
+[32m+[m[32m            if(gamepad2.right_stick_button) { // Closing[m
+                 rightServoPos = rightServo.getPosition();[m
+                 rightServoPos += INCREMENT;[m
+[31m-                if(rightServoPos >= 0.06)[m
+[31m-                    rightServoPos = 0.06;[m
+[32m+[m[32m                if(rightServoPos >= 0.08)[m
+[32m+[m[32m                    rightServoPos = 0.08;[m
+ [m
+                 rightServo.setPosition(rightServoPos);[m
+[32m+[m[32m                leftServoPos = leftServo.getPosition();[m
+[32m+[m[32m                leftServoPos -= INCREMENT;[m
+[32m+[m[32m                if(leftServoPos <= 0.19)[m
+[32m+[m[32m                    leftServoPos = 0.19;[m
+[32m+[m
+[32m+[m[32m                leftServo.setPosition(leftServoPos);[m
+             }[m
+ [m
+[31m-            if(gamepad2.left_bumper) {  //Left Servo Closing[m
+[32m+[m
+[32m+[m[32m           if(gamepad2.dpad_left) {  //Left Servo Closing[m
+                 leftServoPos = leftServo.getPosition();[m
+                 leftServoPos -= INCREMENT;[m
+                 if(leftServoPos <= 0.19)[m
+[36m@@ -284,7 +337,14 @@[m [mpublic class TeleOps extends LinearOpMode {[m
+ [m
+                 rightServo.setPosition(rightServoPos);[m
+             }[m
+[32m+[m[32m            if(gamepad2.dpad_right) {  //Right Servo Closing[m
+[32m+[m[32m                rightServoPos = rightServo.getPosition();[m
+[32m+[m[32m                rightServoPos -= INCREMENT;[m
+[32m+[m[32m                if(rightServoPos >= 0.08)[m
+[32m+[m[32m                    rightServoPos = 0.08;[m
+ [m
+[32m+[m[32m                rightServo.setPosition(rightServoPos);[m
+[32m+[m[32m            }[m
+             // Move both servos to new position.  Assume servos are mirror image of each other.[m
+             clawOffset = Range.clip(clawOffset, -0.5, 0.5);[m
+ [m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java[m
+[1mindex d4aaf45..0e5025b 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java[m
+[36m@@ -12,7 +12,6 @@[m [mimport com.acmerobotics.roadrunner.ftc.OverflowEncoder;[m
+ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;[m
+ import com.acmerobotics.roadrunner.ftc.RawEncoder;[m
+ import com.qualcomm.robotcore.hardware.DcMotorEx;[m
+[31m-import com.qualcomm.robotcore.hardware.DcMotorSimple;[m
+ import com.qualcomm.robotcore.hardware.HardwareMap;[m
+ [m
+ import org.firstinspires.ftc.teamcode.messages.ThreeDeadWheelInputsMessage;[m
+[1mdiff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java[m
+[1mindex 117da28..f16399a 100644[m
+[1m--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java[m
+[1m+++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java[m
+[36m@@ -13,7 +13,6 @@[m [mimport com.acmerobotics.roadrunner.ftc.OverflowEncoder;[m
+ import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;[m
+ import com.acmerobotics.roadrunner.ftc.RawEncoder;[m
+ import com.qualcomm.robotcore.hardware.DcMotorEx;[m
+[31m-import com.qualcomm.robotcore.hardware.DcMotorSimple;[m
+ import com.qualcomm.robotcore.hardware.HardwareMap;[m
+ import com.qualcomm.robotcore.hardware.IMU;[m
+ [m

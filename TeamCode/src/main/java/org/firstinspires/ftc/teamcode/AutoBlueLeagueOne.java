@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -62,9 +61,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
+@Autonomous(name="Auto Blue", group="Robot")
 //@Disabled
-public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {
+public class AutoBlueLeagueOne
+        extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -93,6 +93,8 @@ public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
+    static final int    UPPER_LIMIT_ENCODER = 4200 ;
+    static final double INCREMENT   = 0.003;
 
     @Override
     public void runOpMode() {
@@ -103,6 +105,16 @@ public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
+        boolean isSlideRaised = false;
+        double left;
+        double right;
+        double drive;
+        double turn;
+        double max;
+        double bottomServoPos = 0.0;
+        double topServoPos = 0.0;
+        double leftServoPos = 0.0;
+        double rightServoPos = 0.0;
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -136,8 +148,29 @@ public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+
+        doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
+        isSlideRaised = true;
+
+        rightServoPos = rightServo.getPosition();
+        rightServoPos -= INCREMENT;
+        if(rightServoPos <= 0.0)
+            rightServoPos = 0.0;
+
+        rightServo.setPosition(rightServoPos);
+        leftServoPos = leftServo.getPosition();
+        leftServoPos += INCREMENT;
+        if(leftServoPos >= 0.26)
+            leftServoPos = 0.26;
+        leftServo.setPosition(leftServoPos);
+
+
+        encoderDrive(0.2,-0.5, -0.5, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+
+        doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);
+        isSlideRaised = false;
+
+        encoderDrive(DRIVE_SPEED, -30, -30, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -218,6 +251,72 @@ public class RobotAutoDriveByEncoder_LinearBlue extends LinearOpMode {
             rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move.
+        }
+    }
+
+    public void doubleEncoderDrive(DcMotor slideLeft,DcMotor slideRight,
+                                   double leftSpeed, double rightSpeed,
+                                   double heightInches, double timeoutS) {
+        int newSlideTarget;
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if(leftSpeed >= 0) {
+                newSlideTarget = slideLeft.getCurrentPosition() + (int) (heightInches * COUNTS_PER_INCH);
+            } else {
+                newSlideTarget = 0;
+            }
+            if(newSlideTarget > UPPER_LIMIT_ENCODER){
+                newSlideTarget = UPPER_LIMIT_ENCODER;
+            }
+            slideLeft.setTargetPosition(newSlideTarget);
+            slideRight.setTargetPosition(newSlideTarget);
+            slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            slideLeft.setPower(Math.abs(leftSpeed));
+            slideRight.setPower(Math.abs(rightSpeed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    ((slideRight.isBusy()) || (slideLeft.isBusy()))) {
+                telemetry.addData("Currently left slide is",  " at %b",
+                        slideLeft.isBusy());
+                telemetry.addData("Currently right slide is",  " at %b",
+                        slideRight.isBusy());
+                // Display it for the driver.
+
+                telemetry.addData("Currently left slide at",  " at %7d",
+                        slideLeft.getCurrentPosition());
+                telemetry.addData("Currently right slide at",  " at %7d",
+                        slideRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            telemetry.addData("Exited for loop, left side at",  " at %7d",
+                    slideLeft.getCurrentPosition());
+            telemetry.addData("Exited for loop, right side at",  " at %7d",
+                    slideRight.getCurrentPosition());
+            telemetry.update();
+            // Stop all motion;
+            slideLeft.setPower(0);
+            slideRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //sleep(250);   // optional pause after each move.
         }
     }
 }
