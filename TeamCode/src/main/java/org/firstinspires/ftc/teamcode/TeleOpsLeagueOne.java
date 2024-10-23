@@ -54,10 +54,10 @@ import com.qualcomm.robotcore.util.Range;
 public class TeleOps extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor rightBack = null;
-    public DcMotor leftFront = null;
-    public DcMotor rightFront = null;
-    public DcMotor leftBack = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
     public DcMotor slideRight = null;
     public DcMotor slideLeft = null;
     public Servo bottomServo;
@@ -86,6 +86,11 @@ public class TeleOps extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
+        boolean isSlideRaised = false;
         double left;
         double right;
         double drive;
@@ -95,6 +100,11 @@ public class TeleOps extends LinearOpMode {
         double topServoPos = 0.0;
         double leftServoPos = 0.0;
         double rightServoPos = 0.0;
+
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         bottomServo = hardwareMap.get(Servo.class, "bottomServo");
         topServo = hardwareMap.get(Servo.class, "topServo");
@@ -107,18 +117,12 @@ public class TeleOps extends LinearOpMode {
         rightServo.setPosition(0.0);
 
         // Define and Initialize Motors
-        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
 
         slideRight = hardwareMap.get(DcMotor.class, "slideRight");
         slideLeft = hardwareMap.get(DcMotor.class, "slideLeft");
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
 
         slideRight.setDirection(DcMotor.Direction.REVERSE);
         slideLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -139,99 +143,57 @@ public class TeleOps extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
-            // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            // This way it's also easy to just drive straight, or just turn.
-            drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.right_stick_x;
+            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
 
-            // Combine drive and turn for blended motion.
-            left  = drive + turn;
-            right = drive - turn;
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
 
-            // Normalize the values so neither exceed +/- 1.0
-            max = Math.max(Math.abs(left), Math.abs(right));
-            if (max > 1.0)
-            {
-                left /= max;
-                right /= max;
+            if (max > 1.0) {
+                leftFrontPower  /= max;
+                rightFrontPower /= max;
+                leftBackPower   /= max;
+                rightBackPower  /= max;
             }
-
             // Output the safe vales to the motor drives.
-            rightBack.setPower(0);
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            leftBack.setPower(0);
             slideLeft.setPower(0);
             slideRight.setPower(0);
 
             double forwardSpeed = 0.5;
             // Use gamepad left & right Bumpers to open and close the claw
 
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(rightBackPower);
 
-            if (gamepad1.dpad_left) {
-                rightFront.setPower(0.8);
-                leftFront.setPower(-forwardSpeed);
-                rightBack.setPower(forwardSpeed);
-                leftBack.setPower(-forwardSpeed);
-            }
-            if (gamepad1.dpad_right) {
-                rightFront.setPower(-0.8);
-                leftFront.setPower(forwardSpeed);
-                rightBack.setPower(-forwardSpeed);
-                leftBack.setPower(forwardSpeed);
-            }
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            telemetry.update();
 
-            if (gamepad1.right_stick_y != 0) {
-                leftFront.setPower(gamepad1.right_stick_y * 0.5);
-                leftBack.setPower(gamepad1.right_stick_y * 0.5);
-                rightFront.setPower(-gamepad1.right_stick_y * 0.5);
-                rightBack.setPower(-gamepad1.right_stick_y * 0.5);
+            if(gamepad2.left_trigger > 0.1 ){
+                //Raise the slide
+                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 27, 10.0);
+                isSlideRaised = true;
             }
+            if(gamepad2.right_trigger > 0.1){
 
-            if (gamepad1.dpad_down) {
-                rightFront.setPower(-0.8);
-                leftFront.setPower(-forwardSpeed);
-                rightBack.setPower(forwardSpeed);
-                leftBack.setPower(forwardSpeed);
+                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 27, 10.0);
+                isSlideRaised = false;
+               //Lower the slide
             }
-
-            if (gamepad1.dpad_up) {
-                rightFront.setPower(0.8);
-                leftFront.setPower(forwardSpeed);
-                rightBack.setPower(-forwardSpeed);
-                leftBack.setPower(-forwardSpeed);
+            if(isSlideRaised){
+                slideLeft.setPower(0.05);
+                slideRight.setPower(0.05);
             }
-
-            if(gamepad1.right_bumper) {
-                encoderDrive(slideLeft, -0.4,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            }
-
-            //Left Slide goes down
-            if(gamepad1.left_bumper) {
-                encoderDrive(slideLeft, -0.4,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            }
-
-            //Right Slide goes up for Right Trigger
-            if(gamepad1.right_trigger > 0.1) {
-                encoderDrive(slideRight, 0.7,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            }
-
-            //Left Slide goes up for Left Trigger
-            if(gamepad1.left_trigger > 0.1) {
-                encoderDrive(slideLeft, 0.625,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            }
-/*
-            if(gamepad1.x){
-
-                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 43, 10.0);
-            }
-            if(gamepad1.b){
-
-                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 43, 10.0);
-            }
-*/
-
 
             if (gamepad2.b) {
                 bottomServoPos = bottomServo.getPosition();
@@ -242,6 +204,7 @@ public class TeleOps extends LinearOpMode {
                     bottomServo.setPosition(bottomServoPos);
                 else
                     bottomServo.setPosition(0.31);
+                //Move attachment to the right
             }
             if (gamepad2.x){
                 bottomServoPos = bottomServo.getPosition();
@@ -250,13 +213,14 @@ public class TeleOps extends LinearOpMode {
                     bottomServoPos = 0.0;
 
                 bottomServo.setPosition(bottomServoPos);
+                //Move attachment to left
             }
 
             if (gamepad2.a) {   //Top Servo going down
                 topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
-                if(topServoPos >= 0.375)
-                    topServoPos = 0.375;
+                if(topServoPos >= 0.385)
+                    topServoPos = 0.385;
                 topServo.setPosition(topServoPos);
             }
             if (gamepad2.y){    //Top Servo going UP
@@ -265,10 +229,11 @@ public class TeleOps extends LinearOpMode {
                 if(topServoPos <= 0.32)
                     topServoPos = 0.32;
 
+
                 topServo.setPosition(topServoPos);
             }
 
-            if(gamepad2.right_trigger > 0) {  //Right Servo Opening
+            if(gamepad2.dpad_right) {  //Right Servo Opening
                 rightServoPos = rightServo.getPosition();
                 rightServoPos -= INCREMENT;
                 if(rightServoPos <= 0.0)
@@ -277,7 +242,7 @@ public class TeleOps extends LinearOpMode {
                 rightServo.setPosition(rightServoPos);
             }
 
-            if(gamepad2.left_trigger > 0) { //Left Servo Opening
+            if(gamepad2.dpad_left) { //Left Servo Opening
                 leftServoPos = leftServo.getPosition();
                 leftServoPos += INCREMENT;
                 if(leftServoPos >= 0.26)
@@ -303,7 +268,7 @@ public class TeleOps extends LinearOpMode {
                 leftServo.setPosition(leftServoPos);
             }
 
-            if (gamepad1.left_stick_button) {
+            if (gamepad2.left_stick_button) {
                 // Keep stepping up until we hit the max value.
                 leftServoPos = leftServo.getPosition();
                 leftServoPos += INCREMENT;
@@ -311,7 +276,7 @@ public class TeleOps extends LinearOpMode {
                     leftServoPos = 0.07;
                 leftServo.setPosition(leftServoPos);
             }
-            if (gamepad1.right_stick_button){
+            if (gamepad2.right_stick_button){
                 rightServoPos = rightServo.getPosition();
                 rightServoPos -= INCREMENT;
                 if(rightServoPos <= 0.0)
@@ -329,7 +294,7 @@ public class TeleOps extends LinearOpMode {
 
             telemetry.addData("claw",  "  bottomServoPos  = %.2f", bottomServo.getPosition());
             telemetry.addData("topServoPos = ",  "%.2f", topServo.getPosition());
-            telemetry.addData("right", "%.2f", right);
+
 
             telemetry.addData("Left Servo Position",  " at %7f", leftServo.getPosition());
             telemetry.addData("Right Servo Position",  " at %7f", rightServo.getPosition());
@@ -340,6 +305,7 @@ public class TeleOps extends LinearOpMode {
             sleep(50);
         }
     }
+
     public void encoderDrive(DcMotor slide, double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -400,7 +366,6 @@ public class TeleOps extends LinearOpMode {
                              double heightInches, double timeoutS) {
         int newSlideTarget;
 
-
         // Ensure that the OpMode is still active
         if (opModeIsActive()) {
 
@@ -432,7 +397,10 @@ public class TeleOps extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     ((slideRight.isBusy()) || (slideLeft.isBusy()))) {
-
+                telemetry.addData("Currently left slide is",  " at %b",
+                        slideLeft.isBusy());
+                telemetry.addData("Currently right slide is",  " at %b",
+                        slideRight.isBusy());
                 // Display it for the driver.
 
                 telemetry.addData("Currently left slide at",  " at %7d",
@@ -442,6 +410,11 @@ public class TeleOps extends LinearOpMode {
                 telemetry.update();
             }
 
+            telemetry.addData("Exited for loop, left side at",  " at %7d",
+                    slideLeft.getCurrentPosition());
+            telemetry.addData("Exited for loop, right side at",  " at %7d",
+                    slideRight.getCurrentPosition());
+            telemetry.update();
             // Stop all motion;
             slideLeft.setPower(0);
             slideRight.setPower(0);
@@ -450,7 +423,7 @@ public class TeleOps extends LinearOpMode {
             slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);   // optional pause after each move.
+            //sleep(250);   // optional pause after each move.
         }
     }
 }
