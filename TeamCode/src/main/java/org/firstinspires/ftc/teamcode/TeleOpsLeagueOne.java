@@ -82,7 +82,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
-
+    static final double     TOP_SERVO_INIT_POS      = 0.32;
+    static final double BOTTOM_SERVO_INIT_POS = 0.30;
+    static final double LEFT_SERVO_INIT_POS = 0.26;
+    static final double RIGHT_SERVO_INIT_POS = 0.0;
     @Override
     public void runOpMode() {
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -110,10 +113,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         leftServo = hardwareMap.get(Servo.class, "leftServo");
         rightServo = hardwareMap.get(Servo.class, "rightServo");
 
-        bottomServo.setPosition(0.31);
-        topServo.setPosition(0.32);
-        leftServo.setPosition(0.26);
-        rightServo.setPosition(0.0);
+        bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
+        topServo.setPosition(TOP_SERVO_INIT_POS);
+        leftServo.setPosition(LEFT_SERVO_INIT_POS);
+        rightServo.setPosition(RIGHT_SERVO_INIT_POS);
 
         // Define and Initialize Motors
 
@@ -228,18 +231,20 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 slideRight.setPower(0.05);
             }
 
-            if (gamepad2.b) {
+            if (gamepad2.b) {//Moving bottom servo to the clockwise direction
                 bottomServoPos = bottomServo.getPosition();
                 bottomServoPos += INCREMENT;
                 if(bottomServoPos >= 0.5)
                     bottomServoPos = 0.5;
-                if(topServo.getPosition() > 0.33)
+                //When the pickup arm is horizontal then you are using the rotation of the arm
+                if(topServo.getPosition() > TOP_SERVO_INIT_POS)
                     bottomServo.setPosition(bottomServoPos);
+                //If the arm is vertical the orientation/rotation of arm to the initial position
                 else
-                    bottomServo.setPosition(0.31);
+                    bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
                 //Move attachment to the right
             }
-            if (gamepad2.x){
+            if (gamepad2.x){ //Bottom servo moving counter clockwise direction
                 bottomServoPos = bottomServo.getPosition();
                 bottomServoPos -= INCREMENT;
                 if(bottomServoPos <= 0.0)
@@ -256,20 +261,23 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                     topServoPos = 0.4;
                 topServo.setPosition(topServoPos);
             }
-            //top servo hovers over the block
+            //top servo/Sample Pickup lever hovers over the block & move the left and right
+            //claws facing down.
             if (gamepad2.dpad_down){
                 topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
                 if(topServoPos >= 0.38)
                     topServoPos = 0.38;
+
                 topServo.setPosition(topServoPos);
+                leftServo.setPosition(0.22);
+                rightServo.setPosition(0.05);
             }
              if (gamepad2.y){    //Top Servo going UP
                 topServoPos = topServo.getPosition();
                 topServoPos -= INCREMENT;
                 if(topServoPos <= 0.32)
                     topServoPos = 0.32;
-
 
                 topServo.setPosition(topServoPos);
             }
@@ -312,7 +320,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
 
 
-           if(gamepad2.dpad_left) {  //Left Servo Closing
+           if(gamepad2.dpad_left) {  //Left Servo Closing Individual
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
                 if(leftServoPos <= 0.19)
@@ -337,7 +345,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
                 rightServo.setPosition(rightServoPos);
             }
-            if(gamepad2.dpad_right) {  //Right Servo Closing
+            if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
                 rightServoPos -= INCREMENT;
                 if(rightServoPos >= 0.08)
