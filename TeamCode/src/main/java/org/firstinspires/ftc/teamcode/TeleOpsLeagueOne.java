@@ -88,6 +88,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double RIGHT_SERVO_INIT_POS = 0.0;
     static final double RIGHT_SERVO_HOVER_POS = 0.06;
     static final double LEFT_SERVO_HOVER_POS = 0.20;
+    static final double LEFT_SERVO_CLOSE_POS = 0.197;
+    static final double RIGHT_SERVO_CLOSE_POS = 0.068;
     @Override
     public void runOpMode() {
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -259,6 +261,19 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 if(topServoPos >= 0.4)
                     topServoPos = 0.4;
                 topServo.setPosition(topServoPos);
+
+                rightServoPos = rightServo.getPosition();
+                rightServoPos += INCREMENT;
+                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
+                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
+
+                leftServoPos = leftServo.getPosition();
+                leftServoPos -= INCREMENT;
+                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
+                    leftServoPos = LEFT_SERVO_CLOSE_POS;
+
+                leftServo.setPosition(leftServoPos);
+
             }
             //top servo/Sample Pickup lever hovers over the block & move the left and right
             //claws facing down.
@@ -281,17 +296,18 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 topServo.setPosition(topServoPos);
             }
 
-            if(gamepad2.left_stick_button) {  //Opening
+            if(gamepad2.left_stick_button) {  //closing
                 rightServoPos = rightServo.getPosition();
-                rightServoPos -= INCREMENT;
-                if(rightServoPos <= 0.0)
-                    rightServoPos = 0.0;
+                rightServoPos += INCREMENT;
+                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
+                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
 
                 rightServo.setPosition(rightServoPos);
+
                 leftServoPos = leftServo.getPosition();
-                leftServoPos += INCREMENT;
-                if(leftServoPos >= 0.26)
-                    leftServoPos = 0.26;
+                leftServoPos -= INCREMENT;
+                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
+                    leftServoPos = LEFT_SERVO_CLOSE_POS;
                 leftServo.setPosition(leftServoPos);
             }
 
@@ -322,8 +338,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
            if(gamepad2.dpad_left) {  //Left Servo Closing Individual
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
-                if(leftServoPos <= 0.19)
-                    leftServoPos = 0.19;
+                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
+                    leftServoPos = LEFT_SERVO_CLOSE_POS;
 
                 leftServo.setPosition(leftServoPos);
             }
@@ -347,8 +363,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
-                if(rightServoPos >= 0.08)
-                    rightServoPos = 0.08;
+                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
+                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
 
                 rightServo.setPosition(rightServoPos);
             }
