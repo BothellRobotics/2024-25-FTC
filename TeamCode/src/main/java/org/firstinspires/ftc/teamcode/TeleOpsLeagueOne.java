@@ -86,6 +86,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double BOTTOM_SERVO_INIT_POS = 0.30;
     static final double LEFT_SERVO_INIT_POS = 0.26;
     static final double RIGHT_SERVO_INIT_POS = 0.0;
+    static final double RIGHT_SERVO_HOVER_POS = 0.06;
+    static final double LEFT_SERVO_HOVER_POS = 0.20;
     @Override
     public void runOpMode() {
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -267,8 +269,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                     topServoPos = 0.38;
 
                 topServo.setPosition(topServoPos);
-                leftServo.setPosition(0.22);
-                rightServo.setPosition(0.05);
+                leftServo.setPosition(LEFT_SERVO_HOVER_POS);
+                rightServo.setPosition(RIGHT_SERVO_HOVER_POS);
             }
              if (gamepad2.y){    //Top Servo going UP
                 topServoPos = topServo.getPosition();
@@ -344,7 +346,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
             if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
-                rightServoPos -= INCREMENT;
+                rightServoPos += INCREMENT;
                 if(rightServoPos >= 0.08)
                     rightServoPos = 0.08;
 
