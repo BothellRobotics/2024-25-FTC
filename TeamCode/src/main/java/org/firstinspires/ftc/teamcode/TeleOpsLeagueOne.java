@@ -84,12 +84,19 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;
     static final double     TOP_SERVO_INIT_POS      = 0.32;
     static final double BOTTOM_SERVO_INIT_POS = 0.30;
+
+    static final double TOP_SERVO_PICKUP_POS = 0.4;
+    static final double TOP_SERVO_HOVER_POS = 0.38;
+
     static final double LEFT_SERVO_INIT_POS = 0.26;
     static final double RIGHT_SERVO_INIT_POS = 0.0;
-    static final double RIGHT_SERVO_HOVER_POS = 0.06;
+
     static final double LEFT_SERVO_HOVER_POS = 0.20;
+    static final double RIGHT_SERVO_HOVER_POS = 0.06;
+
     static final double LEFT_SERVO_CLOSE_POS = 0.197;
     static final double RIGHT_SERVO_CLOSE_POS = 0.068;
+
     @Override
     public void runOpMode() {
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -227,7 +234,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 isSlideRaised = false;
                //Lower the slide
             }
-            if(isSlideRaised){
+            if(isSlideRaised){  //Hold the linear slide by powering the DC motors, when it went up. Otherwise slide will come down
                 slideLeft.setPower(0.05);
                 slideRight.setPower(0.05);
             }
@@ -258,14 +265,16 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if (gamepad2.a) {   //Top Servo going down to pickup position
                 topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
-                if(topServoPos >= 0.4)
-                    topServoPos = 0.4;
+                if(topServoPos >= TOP_SERVO_PICKUP_POS)
+                    topServoPos = TOP_SERVO_PICKUP_POS;
                 topServo.setPosition(topServoPos);
 
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
                 if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
                     rightServoPos = RIGHT_SERVO_CLOSE_POS;
+
+                rightServo.setPosition(rightServoPos);
 
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
@@ -280,58 +289,43 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if (gamepad2.dpad_down){
                 topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
-                if(topServoPos >= 0.38)
-                    topServoPos = 0.38;
+                if(topServoPos >= TOP_SERVO_HOVER_POS)
+                    topServoPos = TOP_SERVO_HOVER_POS;
 
                 topServo.setPosition(topServoPos);
+
                 leftServo.setPosition(LEFT_SERVO_HOVER_POS);
                 rightServo.setPosition(RIGHT_SERVO_HOVER_POS);
             }
              if (gamepad2.y){    //Top Servo going UP
                 topServoPos = topServo.getPosition();
                 topServoPos -= INCREMENT;
-                if(topServoPos <= 0.32)
-                    topServoPos = 0.32;
+                if(topServoPos <= TOP_SERVO_INIT_POS)
+                    topServoPos = TOP_SERVO_INIT_POS;
 
                 topServo.setPosition(topServoPos);
             }
 
-            if(gamepad2.left_stick_button) {  //closing
-                rightServoPos = rightServo.getPosition();
-                rightServoPos += INCREMENT;
-                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
-                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
+            if(gamepad2.back) {  //closing
+                leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
 
-                rightServo.setPosition(rightServoPos);
-
-                leftServoPos = leftServo.getPosition();
-                leftServoPos -= INCREMENT;
-                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
-                    leftServoPos = LEFT_SERVO_CLOSE_POS;
-                leftServo.setPosition(leftServoPos);
+                rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
             }
 
-           /* if(gamepad2.dpad_left) { //Left Servo Opening
+            if(gamepad2.start) { // opening
                 leftServoPos = leftServo.getPosition();
                 leftServoPos += INCREMENT;
-                if(leftServoPos >= 0.26)
-                    leftServoPos = 0.26;
-                leftServo.setPosition(leftServoPos);
-            }*/
+                if(leftServoPos <= LEFT_SERVO_INIT_POS)
+                    leftServoPos = LEFT_SERVO_INIT_POS;
 
-            if(gamepad2.right_stick_button) { // Closing
+                leftServo.setPosition(leftServoPos);
+
                 rightServoPos = rightServo.getPosition();
-                rightServoPos += INCREMENT;
-                if(rightServoPos >= 0.08)
-                    rightServoPos = 0.08;
+                rightServoPos -= INCREMENT;
+                if(rightServoPos >= RIGHT_SERVO_INIT_POS)
+                    rightServoPos = RIGHT_SERVO_INIT_POS;
 
                 rightServo.setPosition(rightServoPos);
-                leftServoPos = leftServo.getPosition();
-                leftServoPos -= INCREMENT;
-                if(leftServoPos <= 0.19)
-                    leftServoPos = 0.19;
-
-                leftServo.setPosition(leftServoPos);
             }
 
 
@@ -344,22 +338,6 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 leftServo.setPosition(leftServoPos);
             }
 
-            if (gamepad2.left_stick_button) {
-                // Keep stepping up until we hit the max value.
-                leftServoPos = leftServo.getPosition();
-                leftServoPos += INCREMENT;
-                if(leftServoPos >= 0.07)
-                    leftServoPos = 0.07;
-                leftServo.setPosition(leftServoPos);
-            }
-            if (gamepad2.right_stick_button){
-                rightServoPos = rightServo.getPosition();
-                rightServoPos -= INCREMENT;
-                if(rightServoPos <= 0.0)
-                    rightServoPos = 0.0;
-
-                rightServo.setPosition(rightServoPos);
-            }
             if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
