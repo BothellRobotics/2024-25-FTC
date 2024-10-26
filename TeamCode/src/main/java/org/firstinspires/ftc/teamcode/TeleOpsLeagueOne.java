@@ -87,6 +87,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
     static final double TOP_SERVO_PICKUP_POS = 0.4;
     static final double TOP_SERVO_HOVER_POS = 0.38;
+    static final double TOP_SERVO_OUT_OF_CAGE_POS = 0.365;
 
     static final double LEFT_SERVO_INIT_POS = 0.26;
     static final double RIGHT_SERVO_INIT_POS = 0.0;
@@ -223,7 +224,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 rightFrontDrive.setPower(0.0);
                 rightBackDrive.setPower(0.0);
             }
-            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.36 ){
+            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 ){
                 //Raise the slide
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
                 isSlideRaised = true;
@@ -302,6 +303,15 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 topServoPos -= INCREMENT;
                 if(topServoPos <= TOP_SERVO_INIT_POS)
                     topServoPos = TOP_SERVO_INIT_POS;
+
+                topServo.setPosition(topServoPos);
+            }
+
+            if (gamepad2.dpad_up){    //top servo postition to leave cage
+                topServoPos = topServo.getPosition();
+                topServoPos -= INCREMENT;
+                if(topServoPos <= TOP_SERVO_OUT_OF_CAGE_POS)
+                    topServoPos = TOP_SERVO_OUT_OF_CAGE_POS;
 
                 topServo.setPosition(topServoPos);
             }
