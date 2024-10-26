@@ -224,7 +224,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 rightFrontDrive.setPower(0.0);
                 rightBackDrive.setPower(0.0);
             }
-            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 ){
+            if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 && isSlideRaised == false){
                 //Raise the slide
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
                 isSlideRaised = true;
