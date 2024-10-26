@@ -111,7 +111,6 @@ public class LinearSlideByEncoder extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-
             //Right Slide goes down
             if(gamepad1.right_bumper) {
                 encoderDrive(rightSlide, -0.4,  10,  10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
