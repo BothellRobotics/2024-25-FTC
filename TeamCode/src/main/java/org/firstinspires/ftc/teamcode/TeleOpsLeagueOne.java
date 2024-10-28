@@ -92,11 +92,13 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double LEFT_SERVO_INIT_POS = 0.26;
     static final double RIGHT_SERVO_INIT_POS = 0.0;
 
-    static final double LEFT_SERVO_HOVER_POS = 0.20;
-    static final double RIGHT_SERVO_HOVER_POS = 0.06;
+    static final double LEFT_SERVO_HOVER_POS = 0.22;
+    static final double RIGHT_SERVO_HOVER_POS = 0.04;
 
     static final double LEFT_SERVO_CLOSE_POS = 0.197;
     static final double RIGHT_SERVO_CLOSE_POS = 0.068;
+
+    static final double ARM_UP_BAR = 24.0;
 
     @Override
     public void runOpMode() {
@@ -191,31 +193,31 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             telemetry.update();
 
             if(gamepad1.dpad_up) {
-                leftFrontDrive.setPower(0.2);
-                leftBackDrive.setPower(0.2);
-                rightFrontDrive.setPower(0.2);
-                rightBackDrive.setPower(0.2);
+                leftFrontDrive.setPower(0.1);
+                leftBackDrive.setPower(0.1);
+                rightFrontDrive.setPower(0.1);
+                rightBackDrive.setPower(0.1);
             }
 
             if(gamepad1.dpad_down) {
-                leftFrontDrive.setPower(-0.2);
-                leftBackDrive.setPower(-0.2);
-                rightFrontDrive.setPower(-0.2);
-                rightBackDrive.setPower(-0.2);
+                leftFrontDrive.setPower(-0.1);
+                leftBackDrive.setPower(-0.1);
+                rightFrontDrive.setPower(-0.1);
+                rightBackDrive.setPower(-0.1);
             }
 
             if(gamepad1.dpad_left) {
-                leftFrontDrive.setPower(-0.2);
-                leftBackDrive.setPower(0.2);
-                rightFrontDrive.setPower(0.2);
-                rightBackDrive.setPower(-0.2);
+                leftFrontDrive.setPower(-0.1);
+                leftBackDrive.setPower(0.1);
+                rightFrontDrive.setPower(0.1);
+                rightBackDrive.setPower(-0.1);
             }
 
             if(gamepad1.dpad_left) {
-                leftFrontDrive.setPower(0.2);
-                leftBackDrive.setPower(-0.2);
-                rightFrontDrive.setPower(-0.2);
-                rightBackDrive.setPower(0.2);
+                leftFrontDrive.setPower(0.1);
+                leftBackDrive.setPower(-0.1);
+                rightFrontDrive.setPower(-0.1);
+                rightBackDrive.setPower(0.1);
             }
 
             if(gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1) {
@@ -226,12 +228,12 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
             if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 && isSlideRaised == false){
                 //Raise the slide
-                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
+                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 32, 10.0);
                 isSlideRaised = true;
             }
             if(gamepad2.right_trigger > 0.1){
 
-                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);
+                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 32, 10.0);
                 isSlideRaised = false;
                //Lower the slide
             }
@@ -242,7 +244,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
             if (gamepad2.b) {//Moving bottom servo to the clockwise direction
                 bottomServoPos = bottomServo.getPosition();
-                bottomServoPos += INCREMENT;
+                bottomServoPos += 0.001;
                 if(bottomServoPos >= 0.5)
                     bottomServoPos = 0.5;
                 //When the pickup arm is horizontal then you are using the rotation of the arm
@@ -255,7 +257,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
             if (gamepad2.x){ //Bottom servo moving counter clockwise direction
                 bottomServoPos = bottomServo.getPosition();
-                bottomServoPos -= INCREMENT;
+                bottomServoPos -= 0.001;
                 if(bottomServoPos <= 0.0)
                     bottomServoPos = 0.0;
 
@@ -271,14 +273,14 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 topServo.setPosition(topServoPos);
 
                 rightServoPos = rightServo.getPosition();
-                rightServoPos += INCREMENT;
+                rightServoPos += INCREMENT/3;
                 if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
                     rightServoPos = RIGHT_SERVO_CLOSE_POS;
 
                 rightServo.setPosition(rightServoPos);
 
                 leftServoPos = leftServo.getPosition();
-                leftServoPos -= INCREMENT;
+                leftServoPos -= INCREMENT/3;
                 if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
                     leftServoPos = LEFT_SERVO_CLOSE_POS;
 
@@ -355,6 +357,11 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                     rightServoPos = RIGHT_SERVO_CLOSE_POS;
 
                 rightServo.setPosition(rightServoPos);
+            }
+
+            if(gamepad2.left_stick_button) {
+                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, ARM_UP_BAR, 10.0);
+                isSlideRaised = true;
             }
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
