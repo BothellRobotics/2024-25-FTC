@@ -78,15 +78,15 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final int    UPPER_LIMIT_ENCODER = 4200 ;
-    static final double INCREMENT   = 0.003;
+    static final double INCREMENT   = 0.009;
 
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
-    static final double     TOP_SERVO_INIT_POS      = 0.32;
+    static final double     TOP_SERVO_INIT_POS      = 0.31;
     static final double BOTTOM_SERVO_INIT_POS = 0.30;
 
-    static final double TOP_SERVO_PICKUP_POS = 0.4;
-    static final double TOP_SERVO_HOVER_POS = 0.38;
+    static final double TOP_SERVO_PICKUP_POS = 0.41;
+    static final double TOP_SERVO_HOVER_POS = 0.39;
     static final double TOP_SERVO_OUT_OF_CAGE_POS = 0.365;
 
     static final double LEFT_SERVO_INIT_POS = 0.26;
@@ -95,10 +95,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double LEFT_SERVO_HOVER_POS = 0.22;
     static final double RIGHT_SERVO_HOVER_POS = 0.04;
 
-    static final double LEFT_SERVO_CLOSE_POS = 0.197;
-    static final double RIGHT_SERVO_CLOSE_POS = 0.068;
+    static final double LEFT_SERVO_CLOSE_POS = 0.176;
+    static final double RIGHT_SERVO_CLOSE_POS = 0.089;
 
-    static final double ARM_UP_BAR = 24.0;
+    static final double ARM_UP_BAR = 16.0;
 
     @Override
     public void runOpMode() {
@@ -114,7 +114,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         double leftServoPos = 0.0;
         double rightServoPos = 0.0;
 
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -237,6 +237,12 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 isSlideRaised = false;
                //Lower the slide
             }
+
+            if(gamepad2.right_stick_button){
+
+                doubleDownDrive(slideLeft, slideRight, 0.2, 0.2, 3.6, 10.0);
+                //Lower the slide slightly
+            }
             if(isSlideRaised){  //Hold the linear slide by powering the DC motors, when it went up. Otherwise slide will come down
                 slideLeft.setPower(0.05);
                 slideRight.setPower(0.05);
@@ -267,25 +273,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
             if (gamepad2.a) {   //Top Servo going down to pickup position
                 topServoPos = topServo.getPosition();
-                topServoPos += INCREMENT;
+                topServoPos += 0.015;
                 if(topServoPos >= TOP_SERVO_PICKUP_POS)
                     topServoPos = TOP_SERVO_PICKUP_POS;
                 topServo.setPosition(topServoPos);
-
-                rightServoPos = rightServo.getPosition();
-                rightServoPos += INCREMENT/3;
-                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
-                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
-
-                rightServo.setPosition(rightServoPos);
-
-                leftServoPos = leftServo.getPosition();
-                leftServoPos -= INCREMENT/3;
-                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
-                    leftServoPos = LEFT_SERVO_CLOSE_POS;
-
-                leftServo.setPosition(leftServoPos);
-
             }
             //top servo/Sample Pickup lever hovers over the block & move the left and right
             //claws facing down.
@@ -302,7 +293,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
              if (gamepad2.y){    //Top Servo going UP
                 topServoPos = topServo.getPosition();
-                topServoPos -= INCREMENT;
+                topServoPos -= 0.003;
                 if(topServoPos <= TOP_SERVO_INIT_POS)
                     topServoPos = TOP_SERVO_INIT_POS;
 
@@ -344,8 +335,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
            if(gamepad2.dpad_left) {  //Left Servo Closing Individual
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
-                if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
-                    leftServoPos = LEFT_SERVO_CLOSE_POS;
+               /* if(leftServoPos <= LEFT_SERVO_CLOSE_POS)
+                    leftServoPos = LEFT_SERVO_CLOSE_POS;*/
 
                 leftServo.setPosition(leftServoPos);
             }
@@ -353,8 +344,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
-                if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
-                    rightServoPos = RIGHT_SERVO_CLOSE_POS;
+               /* if(rightServoPos >= RIGHT_SERVO_CLOSE_POS)
+                    rightServoPos = RIGHT_SERVO_CLOSE_POS;*/
 
                 rightServo.setPosition(rightServoPos);
             }
@@ -362,6 +353,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if(gamepad2.left_stick_button) {
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, ARM_UP_BAR, 10.0);
                 isSlideRaised = true;
+                //move arm to where blue bar is
             }
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
@@ -455,6 +447,72 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
             if(newSlideTarget > UPPER_LIMIT_ENCODER){
                 newSlideTarget = UPPER_LIMIT_ENCODER;
+            }
+            slideLeft.setTargetPosition(newSlideTarget);
+            slideRight.setTargetPosition(newSlideTarget);
+            slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            slideLeft.setPower(Math.abs(leftSpeed));
+            slideRight.setPower(Math.abs(rightSpeed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    ((slideRight.isBusy()) || (slideLeft.isBusy()))) {
+                telemetry.addData("Currently left slide is",  " at %b",
+                        slideLeft.isBusy());
+                telemetry.addData("Currently right slide is",  " at %b",
+                        slideRight.isBusy());
+                // Display it for the driver.
+
+                telemetry.addData("Currently left slide at",  " at %7d",
+                        slideLeft.getCurrentPosition());
+                telemetry.addData("Currently right slide at",  " at %7d",
+                        slideRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            telemetry.addData("Exited for loop, left side at",  " at %7d",
+                    slideLeft.getCurrentPosition());
+            telemetry.addData("Exited for loop, right side at",  " at %7d",
+                    slideRight.getCurrentPosition());
+            telemetry.update();
+            // Stop all motion;
+            slideLeft.setPower(0);
+            slideRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //sleep(250);   // optional pause after each move.
+        }
+    }
+
+    public void doubleDownDrive(DcMotor slideLeft,DcMotor slideRight,
+                                   double leftSpeed, double rightSpeed,
+                                   double heightInches, double timeoutS) {
+        int newSlideTarget;
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            newSlideTarget = slideLeft.getCurrentPosition() - (int) (heightInches * COUNTS_PER_INCH);
+
+            if(newSlideTarget > UPPER_LIMIT_ENCODER){
+                newSlideTarget = UPPER_LIMIT_ENCODER;
+            }
+
+            if(newSlideTarget < 0){
+                newSlideTarget = 0;
             }
             slideLeft.setTargetPosition(newSlideTarget);
             slideRight.setTargetPosition(newSlideTarget);

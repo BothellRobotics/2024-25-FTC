@@ -61,8 +61,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue", group="Robot")
-public class AutoBlueLeagueOne extends LinearOpMode {
+@Autonomous(name="Auto Blue Left", group="Robot")
+public class AutoBlueLeftLeagueOne extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -93,6 +93,10 @@ public class AutoBlueLeagueOne extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;
     static final int    UPPER_LIMIT_ENCODER = 4200 ;
     static final double INCREMENT   = 0.003;
+    static final double     TOP_SERVO_INIT_POS      = 0.32;
+    static final double BOTTOM_SERVO_INIT_POS = 0.30;
+    static final double LEFT_SERVO_INIT_POS = 0.176;
+    static final double RIGHT_SERVO_INIT_POS = 0.089;
 
     @Override
     public void runOpMode() {
@@ -103,6 +107,26 @@ public class AutoBlueLeagueOne extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
+        bottomServo = hardwareMap.get(Servo.class, "bottomServo");
+        topServo = hardwareMap.get(Servo.class, "topServo");
+        leftServo = hardwareMap.get(Servo.class, "leftServo");
+        rightServo = hardwareMap.get(Servo.class, "rightServo");
+        slideRight = hardwareMap.get(DcMotor.class, "slideRight");
+        slideLeft = hardwareMap.get(DcMotor.class, "slideLeft");
+
+        bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
+        topServo.setPosition(TOP_SERVO_INIT_POS);
+        leftServo.setPosition(LEFT_SERVO_INIT_POS);
+        rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+
+        slideRight.setDirection(DcMotor.Direction.REVERSE);
+        slideLeft.setDirection(DcMotor.Direction.FORWARD);
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         boolean isSlideRaised = false;
         double left;
         double right;
@@ -142,33 +166,13 @@ public class AutoBlueLeagueOne extends LinearOpMode {
 
         // Wait for the game to start (driver presses START)
         waitForStart();
+        slideLeft.setPower(0);
+        slideRight.setPower(0);
+
+        encoderDrive(0.4, 28, 28, 10.0);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-
-        doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 31, 10.0);
-        isSlideRaised = true;
-
-        rightServoPos = rightServo.getPosition();
-        rightServoPos -= INCREMENT;
-        if(rightServoPos <= 0.0)
-            rightServoPos = 0.0;
-
-        rightServo.setPosition(rightServoPos);
-        leftServoPos = leftServo.getPosition();
-        leftServoPos += INCREMENT;
-        if(leftServoPos >= 0.26)
-            leftServoPos = 0.26;
-        leftServo.setPosition(leftServoPos);
-
-
-        encoderDrive(0.2,-0.5, -0.5, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-
-        doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 31, 10.0);
-        isSlideRaised = false;
-
-        encoderDrive(DRIVE_SPEED, -30, -30, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
