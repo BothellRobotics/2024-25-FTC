@@ -98,6 +98,9 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double LEFT_SERVO_CLOSE_POS = 0.176;
     static final double RIGHT_SERVO_CLOSE_POS = 0.089;
 
+    static final double LEFT_SERVO_SLIGHT_OPEN_POS = 0.185;
+    static final double RIGHT_SERVO_SLIGHT_OPEN_POS = 0.08;
+
     static final double ARM_UP_BAR = 16.0;
 
     @Override
@@ -242,6 +245,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
                 doubleDownDrive(slideLeft, slideRight, 0.2, 0.2, 3.6, 10.0);
                 //Lower the slide slightly
+                isSlideRaised = true;
             }
             if(isSlideRaised){  //Hold the linear slide by powering the DC motors, when it went up. Otherwise slide will come down
                 slideLeft.setPower(0.05);
@@ -316,19 +320,9 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
 
             if(gamepad2.start) { // opening
-                leftServoPos = leftServo.getPosition();
-                leftServoPos += INCREMENT;
-                if(leftServoPos <= LEFT_SERVO_INIT_POS)
-                    leftServoPos = LEFT_SERVO_INIT_POS;
+                leftServo.setPosition(LEFT_SERVO_INIT_POS);
 
-                leftServo.setPosition(leftServoPos);
-
-                rightServoPos = rightServo.getPosition();
-                rightServoPos -= INCREMENT;
-                if(rightServoPos >= RIGHT_SERVO_INIT_POS)
-                    rightServoPos = RIGHT_SERVO_INIT_POS;
-
-                rightServo.setPosition(rightServoPos);
+                rightServo.setPosition(RIGHT_SERVO_INIT_POS );
             }
 
 
@@ -348,6 +342,22 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                     rightServoPos = RIGHT_SERVO_CLOSE_POS;*/
 
                 rightServo.setPosition(rightServoPos);
+            }
+
+            if(gamepad2.left_stick_y > 0.1) {
+                //left and right servo slight open
+                rightServoPos = rightServo.getPosition();
+                rightServoPos += INCREMENT;
+               if(rightServoPos >= RIGHT_SERVO_SLIGHT_OPEN_POS)
+                    rightServoPos = RIGHT_SERVO_SLIGHT_OPEN_POS;
+                rightServo.setPosition(rightServoPos);
+
+                leftServoPos = leftServo.getPosition();
+                leftServoPos -= INCREMENT;
+               if(leftServoPos <= LEFT_SERVO_SLIGHT_OPEN_POS)
+                    leftServoPos = LEFT_SERVO_SLIGHT_OPEN_POS;
+
+                leftServo.setPosition(leftServoPos);
             }
 
             if(gamepad2.left_stick_button) {
