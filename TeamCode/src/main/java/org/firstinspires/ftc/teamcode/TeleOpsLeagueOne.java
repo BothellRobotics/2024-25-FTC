@@ -86,8 +86,9 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double BOTTOM_SERVO_INIT_POS = 0.30;
 
     static final double TOP_SERVO_PICKUP_POS = 0.41;
-    static final double TOP_SERVO_HOVER_POS = 0.39;
+    static final double TOP_SERVO_HOVER_POS = 0.38;
     static final double TOP_SERVO_OUT_OF_CAGE_POS = 0.365;
+    static final double TOP_SERVO_SAMPLE_PICKUP_POS = 0.405;
 
     static final double LEFT_SERVO_INIT_POS = 0.26;
     static final double RIGHT_SERVO_INIT_POS = 0.0;
@@ -277,7 +278,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
             if (gamepad2.a) {   //Top Servo going down to pickup position
                 topServoPos = topServo.getPosition();
-                topServoPos += 0.015;
+                topServoPos += 0.025;
                 if(topServoPos >= TOP_SERVO_PICKUP_POS)
                     topServoPos = TOP_SERVO_PICKUP_POS;
                 topServo.setPosition(topServoPos);
@@ -358,6 +359,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                     leftServoPos = LEFT_SERVO_SLIGHT_OPEN_POS;
 
                 leftServo.setPosition(leftServoPos);
+            }
+
+            if(gamepad2.right_stick_y > 0.1){
+                topServo.setPosition(TOP_SERVO_SAMPLE_PICKUP_POS);
             }
 
             if(gamepad2.left_stick_button) {
