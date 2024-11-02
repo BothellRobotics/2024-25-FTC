@@ -29,9 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.ftc.Encoder;
+import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
+import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -93,10 +98,27 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;
     static final int    UPPER_LIMIT_ENCODER = 4200 ;
     static final double INCREMENT   = 0.003;
-    static final double     TOP_SERVO_INIT_POS      = 0.32;
+    static final double     TOP_SERVO_INIT_POS      = 0.31;
     static final double BOTTOM_SERVO_INIT_POS = 0.30;
-    static final double LEFT_SERVO_INIT_POS = 0.176;
-    static final double RIGHT_SERVO_INIT_POS = 0.089;
+
+    static final double TOP_SERVO_PICKUP_POS = 0.41;
+    static final double TOP_SERVO_HOVER_POS = 0.38;
+    static final double TOP_SERVO_OUT_OF_CAGE_POS = 0.365;
+    static final double TOP_SERVO_SAMPLE_PICKUP_POS = 0.405;
+
+    static final double LEFT_SERVO_INIT_POS = 0.26;
+    static final double RIGHT_SERVO_INIT_POS = 0.0;
+
+    static final double LEFT_SERVO_HOVER_POS = 0.22;
+    static final double RIGHT_SERVO_HOVER_POS = 0.04;
+
+    static final double LEFT_SERVO_CLOSE_POS = 0.176;
+    static final double RIGHT_SERVO_CLOSE_POS = 0.089;
+
+    static final double LEFT_SERVO_SLIGHT_OPEN_POS = 0.185;
+    static final double RIGHT_SERVO_SLIGHT_OPEN_POS = 0.08;
+
+    static final double ARM_UP_BAR = 16.0;
 
     @Override
     public void runOpMode() {
@@ -141,7 +163,7 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -149,7 +171,6 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -168,7 +189,6 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         waitForStart();
         slideLeft.setPower(0);
         slideRight.setPower(0);
-
         encoderDrive(0.4, 28, 28, 10.0);
 
         // Step through each leg of the path,

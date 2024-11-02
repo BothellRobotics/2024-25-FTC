@@ -118,8 +118,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         double leftServoPos = 0.0;
         double rightServoPos = 0.0;
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -191,10 +191,6 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.update();
 
             if(gamepad1.dpad_up) {
                 leftFrontDrive.setPower(0.1);
@@ -372,6 +368,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
             // Send telemetry message to signify robot running;
             telemetry.addData("Left Slide Currently at",  " at %7d", slideLeft.getCurrentPosition());
