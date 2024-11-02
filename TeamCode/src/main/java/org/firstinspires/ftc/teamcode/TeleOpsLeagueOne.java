@@ -129,10 +129,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         leftServo = hardwareMap.get(Servo.class, "leftServo");
         rightServo = hardwareMap.get(Servo.class, "rightServo");
 
-        bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
+       /* bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
         topServo.setPosition(TOP_SERVO_INIT_POS);
         leftServo.setPosition(LEFT_SERVO_INIT_POS);
-        rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+        rightServo.setPosition(RIGHT_SERVO_INIT_POS);*/
 
         // Define and Initialize Motors
 
@@ -160,6 +160,11 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
+            topServo.setPosition(TOP_SERVO_INIT_POS);
+            leftServo.setPosition(LEFT_SERVO_INIT_POS);
+            rightServo.setPosition(RIGHT_SERVO_INIT_POS);
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
