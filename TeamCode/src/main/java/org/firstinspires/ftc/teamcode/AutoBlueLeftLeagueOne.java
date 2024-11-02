@@ -70,9 +70,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class AutoBlueLeftLeagueOne extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor leftFrontDrive = null;
+    //private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
+    //private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     public DcMotor slideRight = null;
     public DcMotor slideLeft = null;
@@ -125,10 +125,30 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
 
         // Initialize the drive system variables.
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
+        //leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
+        //rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
+
+        //leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        //rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        //leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         slideRight = hardwareMap.get(DcMotor.class, "slideRight");
         slideLeft = hardwareMap.get(DcMotor.class, "slideLeft");
@@ -166,46 +186,26 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at",  "%7d :%7d :%7d :%7d",
-                            leftFrontDrive.getCurrentPosition(),
-                            leftBackDrive.getCurrentPosition(),
-                            rightFrontDrive.getCurrentPosition(),
-                            rightBackDrive.getCurrentPosition());
+        telemetry.addData("Starting at",  "%7d :%7d ",
+                            rightBackDrive.getCurrentPosition(),
+                            leftBackDrive.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
         waitForStart();
         slideLeft.setPower(0);
         slideRight.setPower(0);
-        encoderDrive(0.1, 10, 10, 10.0);
+
+        encoderDrive(0.1, 28, 28, 10.0);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
+        sleep(100);  // pause to display final telemetry message.
     }
 
     /*
@@ -246,8 +246,8 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            leftFrontDrive.setPower(Math.abs(speed));
-            rightFrontDrive.setPower(Math.abs(speed));
+            //leftFrontDrive.setPower(Math.abs(speed));
+            //rightFrontDrive.setPower(Math.abs(speed));
             leftBackDrive.setPower(Math.abs(speed));
             rightBackDrive.setPower(Math.abs(speed));
 
@@ -265,24 +265,22 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
                 telemetry.addData("Running to",  " %7d :%7d", newRightBackTarget, newLeftBackTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d",
                         leftBackDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
-                telemetry.addData("Current Power ",  " at LF : %4.2f RF : %4.2f  LB : %4.2f RB : %4.2f",
-                        leftFrontDrive.getPower(), rightFrontDrive.getPower(),
-                        rightBackDrive.getPower(), rightBackDrive.getPower());
+                telemetry.addData("Current Power ",  " at LB : %4.2f RB : %4.2f",
+                        rightBackDrive.getPower(), leftBackDrive.getPower());
                 telemetry.update();
             }
 
             // Stop all motion;
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
+            //leftFrontDrive.setPower(0);
+            //rightFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
             rightBackDrive.setPower(0);
 
-
             // Turn off RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(100);   // optional pause after each move.
         }
