@@ -225,11 +225,13 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 rightFrontDrive.setPower(0.0);
                 rightBackDrive.setPower(0.0);
             }
+            //Reach the Top basket
             if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 && isSlideRaised == false){
                 //Raise the slide
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 32, 10.0);
                 isSlideRaised = true;
             }
+            //Bring the slide all the way down
             if(gamepad2.right_trigger > 0.1){
 
                 doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 32, 10.0);
@@ -237,6 +239,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                //Lower the slide
             }
 
+            //Blue Bar to place the Specimen
             if(gamepad2.right_stick_button){
 
                 doubleDownDrive(slideLeft, slideRight, 0.2, 0.2, 3.6, 10.0);
