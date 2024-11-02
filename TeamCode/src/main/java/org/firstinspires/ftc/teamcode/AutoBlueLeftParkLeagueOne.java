@@ -61,9 +61,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue Left", group="Robot")
-public class AutoBlueLeftLeagueOne extends LinearOpMode {
+@Autonomous(name="Auto Blue Left Parking", group="Robot")
+public class AutoBlueLeftParkLeagueOne extends LinearOpMode {
 
+    static final long DELAYED_START = 3000;
     /* Declare OpMode members. */
     //private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -197,9 +198,13 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         slideLeft.setPower(0);
         slideRight.setPower(0);
 
-        encoderDrive(0.2, 28, 28, 10.0);
+        sleep(DELAYED_START );
+        encoderDrive(0.2, 14, 14, 10.0);
+        encoderDrive(0.2, 28, -28, 10.0);
+        encoderDrive(0.2, 70, 70, 10.0);
+        encoderDrive(0.2, 28, -28, 10.0);
+        encoderDrive(0.2, 18, 18, 10.0);
 
-        linearSlideDrive(slideLeft, slideRight, 0.2, 0.2, 3.3, 10.0);
         slideLeft.setPower(0.05);
         slideRight.setPower(0.05);
 

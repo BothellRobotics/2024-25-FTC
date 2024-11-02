@@ -186,12 +186,10 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
             double forwardSpeed = 0.5;
 
-
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-
 
             if(gamepad1.dpad_up) {
                 leftFrontDrive.setPower(0.1);
