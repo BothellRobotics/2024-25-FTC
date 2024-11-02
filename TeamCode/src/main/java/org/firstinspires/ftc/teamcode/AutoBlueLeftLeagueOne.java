@@ -89,9 +89,9 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 5.512 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
@@ -129,20 +129,24 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
+
+        slideRight = hardwareMap.get(DcMotor.class, "slideRight");
+        slideLeft = hardwareMap.get(DcMotor.class, "slideLeft");
+
         bottomServo = hardwareMap.get(Servo.class, "bottomServo");
         topServo = hardwareMap.get(Servo.class, "topServo");
         leftServo = hardwareMap.get(Servo.class, "leftServo");
         rightServo = hardwareMap.get(Servo.class, "rightServo");
-        slideRight = hardwareMap.get(DcMotor.class, "slideRight");
-        slideLeft = hardwareMap.get(DcMotor.class, "slideLeft");
+
 
         bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
         topServo.setPosition(TOP_SERVO_INIT_POS);
-        leftServo.setPosition(LEFT_SERVO_INIT_POS);
-        rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+        leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
+        rightServo.setPosition(RIGHT_SERVO_CLOSE_POS);
 
         slideRight.setDirection(DcMotor.Direction.REVERSE);
         slideLeft.setDirection(DcMotor.Direction.FORWARD);
+
         slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -172,6 +176,11 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -189,7 +198,7 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         waitForStart();
         slideLeft.setPower(0);
         slideRight.setPower(0);
-        encoderDrive(0.4, 28, 28, 10.0);
+        encoderDrive(0.1, 10, 10, 10.0);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -219,19 +228,19 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            //newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            //newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightBackTarget = rightBackDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
             leftBackDrive.setTargetPosition(newLeftBackTarget);
             rightBackDrive.setTargetPosition(newRightBackTarget);
-            leftFrontDrive.setTargetPosition(newLeftFrontTarget);
-            rightFrontDrive.setTargetPosition(newRightFrontTarget);
+            //leftFrontDrive.setTargetPosition(newLeftFrontTarget);
+            //rightFrontDrive.setTargetPosition(newRightFrontTarget);
 
             // Turn On RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -250,12 +259,15 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
-                   (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy())) {
+                   (leftBackDrive.isBusy() && rightBackDrive.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Running to",  " %7d :%7d", newLeftBackTarget,  newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
+                telemetry.addData("Running to",  " %7d :%7d", newRightBackTarget, newLeftBackTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d",
-                                            leftFrontDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
+                        leftBackDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
+                telemetry.addData("Current Power ",  " at LF : %4.2f RF : %4.2f  LB : %4.2f RB : %4.2f",
+                        leftFrontDrive.getPower(), rightFrontDrive.getPower(),
+                        rightBackDrive.getPower(), rightBackDrive.getPower());
                 telemetry.update();
             }
 
@@ -272,7 +284,7 @@ public class AutoBlueLeftLeagueOne extends LinearOpMode {
             leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);   // optional pause after each move.
+            sleep(100);   // optional pause after each move.
         }
     }
 
