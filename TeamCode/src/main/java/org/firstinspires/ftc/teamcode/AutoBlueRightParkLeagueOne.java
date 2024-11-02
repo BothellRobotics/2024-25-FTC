@@ -61,14 +61,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue Left Parking", group="Robot")
-public class AutoBlueLeftParkLeagueOne extends LinearOpMode {
+@Autonomous(name="Auto Blue Right Parking", group="Robot")
+public class AutoBlueRightParkLeagueOne extends LinearOpMode {
 
     static final long DELAYED_START = 3000;
     static final boolean IS_PARK_CLOSE_TO_WALL = false;
 
-    static final double PARK_CLOSE_TO_WALL = 70.0;
-    static final double PARK_AWAY_FROM_WALL = 50.0;
+    static final double PARK_CLOSE_TO_WALL = 50.0;
+    static final double PARK_AWAY_FROM_WALL = 35.0;
 
     /* Declare OpMode members. */
     //private DcMotor leftFrontDrive = null;
