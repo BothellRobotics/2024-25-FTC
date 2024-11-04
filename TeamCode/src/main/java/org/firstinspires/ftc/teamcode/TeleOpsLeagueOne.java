@@ -157,14 +157,14 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
         // Wait for the game to start (driver presses START)
         waitForStart();
-
+        bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
+        topServo.setPosition(TOP_SERVO_INIT_POS);
+        leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
+        rightServo.setPosition(RIGHT_SERVO_CLOSE_POS);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
-            topServo.setPosition(TOP_SERVO_INIT_POS);
-            leftServo.setPosition(LEFT_SERVO_INIT_POS);
-            rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -280,21 +280,24 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
 
             if (gamepad2.a) {   //Top Servo going down to pickup position
-                topServoPos = topServo.getPosition();
+                /*topServoPos = topServo.getPosition();
                 topServoPos += 0.025;
                 if(topServoPos >= TOP_SERVO_PICKUP_POS)
                     topServoPos = TOP_SERVO_PICKUP_POS;
-                topServo.setPosition(topServoPos);
+                topServo.setPosition(topServoPos);*/
+                topServo.setPosition(TOP_SERVO_PICKUP_POS);
+
             }
             //top servo/Sample Pickup lever hovers over the block & move the left and right
             //claws facing down.
             if (gamepad2.dpad_down){
-                topServoPos = topServo.getPosition();
+               /* topServoPos = topServo.getPosition();
                 topServoPos += INCREMENT;
                 if(topServoPos >= TOP_SERVO_HOVER_POS)
                     topServoPos = TOP_SERVO_HOVER_POS;
 
-                topServo.setPosition(topServoPos);
+                topServo.setPosition(topServoPos);*/
+                topServo.setPosition(TOP_SERVO_HOVER_POS);
 
                 leftServo.setPosition(LEFT_SERVO_HOVER_POS);
                 rightServo.setPosition(RIGHT_SERVO_HOVER_POS);
