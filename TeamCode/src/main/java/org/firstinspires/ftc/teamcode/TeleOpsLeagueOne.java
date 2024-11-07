@@ -112,7 +112,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         boolean isSlideRaised = false;
-
+        boolean isArmOpen = true;
+        boolean isArmUp = true;
         double max;
         double bottomServoPos = 0.0;
         double topServoPos = 0.0;
@@ -233,13 +234,23 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             //Reach the Top basket
             if(gamepad2.left_trigger > 0.1 && topServo.getPosition() < 0.33 && isSlideRaised == false){
                 //Raise the slide
-                doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 32, 10.0);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 32, 10.0);
+                    }
+                }).start();
+
                 isSlideRaised = true;
             }
             //Bring the slide all the way down
             if(gamepad2.right_trigger > 0.1){
-
-                doubleEncoderDrive(slideLeft, slideRight, -0.4, -0.4, 32, 10.0);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleEncoderDrive(slideLeft, slideRight, -0.6, -0.6, 32, 10.0);
+                    }
+                }).start();
                 isSlideRaised = false;
                //Lower the slide
             }
@@ -280,12 +291,23 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
 
             if (gamepad2.a) {   //Top Servo going down to pickup position
-                /*topServoPos = topServo.getPosition();
-                topServoPos += 0.025;
-                if(topServoPos >= TOP_SERVO_PICKUP_POS)
-                    topServoPos = TOP_SERVO_PICKUP_POS;
-                topServo.setPosition(topServoPos);*/
-                topServo.setPosition(TOP_SERVO_PICKUP_POS);
+                if(isArmUp) {
+                    topServoPos = topServo.getPosition();
+                    topServoPos += 0.025;
+                    if (topServoPos >= TOP_SERVO_PICKUP_POS)
+                        topServoPos = TOP_SERVO_PICKUP_POS;
+                    topServo.setPosition(topServoPos);
+                    isArmUp = false;
+                }
+
+                else{
+                    topServoPos = topServo.getPosition();
+                    topServoPos -= 0.003;
+                    if (topServoPos <= TOP_SERVO_INIT_POS)
+                        topServoPos = TOP_SERVO_INIT_POS;
+                    topServo.setPosition(topServoPos);
+                    isArmUp = true;
+                }
 
             }
             //top servo/Sample Pickup lever hovers over the block & move the left and right
@@ -303,12 +325,12 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 rightServo.setPosition(RIGHT_SERVO_HOVER_POS);
             }
              if (gamepad2.y){    //Top Servo going UP
-                topServoPos = topServo.getPosition();
+              /*  topServoPos = topServo.getPosition();
                 topServoPos -= 0.003;
                 if(topServoPos <= TOP_SERVO_INIT_POS)
                     topServoPos = TOP_SERVO_INIT_POS;
 
-                topServo.setPosition(topServoPos);
+                topServo.setPosition(topServoPos);*/
             }
 
             if (gamepad2.dpad_up){    //top servo postition to leave cage
@@ -320,16 +342,25 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 topServo.setPosition(topServoPos);
             }
 
-            if(gamepad2.back) {  //closing
+           /* if(gamepad2.back) {  //closing
                 leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
 
                 rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
-            }
+            }*/
 
-            if(gamepad2.start) { // opening
-                leftServo.setPosition(LEFT_SERVO_INIT_POS);
+            if(gamepad2.start) { // opening and closing
+                if(isArmOpen){
+                    leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
 
-                rightServo.setPosition(RIGHT_SERVO_INIT_POS );
+                    rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
+                    isArmOpen = false;
+                }
+                else {
+                    leftServo.setPosition(LEFT_SERVO_INIT_POS);
+
+                    rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+                    isArmOpen = true;
+                }
             }
 
 
