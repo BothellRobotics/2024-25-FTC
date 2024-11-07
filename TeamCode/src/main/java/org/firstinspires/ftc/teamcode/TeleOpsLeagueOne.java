@@ -290,26 +290,24 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 //Move attachment to left
             }
 
-            if (gamepad2.a) {   //Top Servo going down to pickup position
-                if(isArmUp) {
-                    topServoPos = topServo.getPosition();
-                    topServoPos += 0.025;
-                    if (topServoPos >= TOP_SERVO_PICKUP_POS)
-                        topServoPos = TOP_SERVO_PICKUP_POS;
-                    topServo.setPosition(topServoPos);
+            if (gamepad2.a && isArmUp) {   //Top Servo going down to pickup position
+                    topServo.setPosition(TOP_SERVO_PICKUP_POS);
                     isArmUp = false;
-                }
-
-                else{
-                    topServoPos = topServo.getPosition();
-                    topServoPos -= 0.003;
-                    if (topServoPos <= TOP_SERVO_INIT_POS)
-                        topServoPos = TOP_SERVO_INIT_POS;
-                    topServo.setPosition(topServoPos);
-                    isArmUp = true;
-                }
-
+                    telemetry.addData("arm is DOWN is arm up = %b", isArmUp);
+                    telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
+                    telemetry.update();
+                    sleep(1000);
             }
+            if(gamepad2.a && !isArmUp){
+                    topServo.setPosition(TOP_SERVO_INIT_POS + 0.01);
+                    isArmUp = true;
+                    telemetry.addData("arm is UP is arm up = %b", isArmUp);
+                    telemetry.addData("topServoPos = ",  "%.2f", topServo.getPosition());
+                    telemetry.update();
+                    sleep(1000);
+            }
+
+
             //top servo/Sample Pickup lever hovers over the block & move the left and right
             //claws facing down.
             if (gamepad2.dpad_down){
@@ -348,20 +346,20 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
             }*/
 
-            if(gamepad2.start) { // opening and closing
-                if(isArmOpen){
+            if(gamepad2.start && isArmOpen == true) { // opening and closing
                     leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
-
                     rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
                     isArmOpen = false;
+                    sleep(1000);
                 }
-                else {
-                    leftServo.setPosition(LEFT_SERVO_INIT_POS);
 
+            if(gamepad2.start && isArmOpen == false) {
+                    leftServo.setPosition(LEFT_SERVO_INIT_POS);
                     rightServo.setPosition(RIGHT_SERVO_INIT_POS);
                     isArmOpen = true;
-                }
+                    sleep(1000);
             }
+
 
 
            if(gamepad2.dpad_left) {  //Left Servo Closing Individual
