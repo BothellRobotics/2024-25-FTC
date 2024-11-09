@@ -107,8 +107,8 @@ public class TeleOpsLeagueOne extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFront");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         boolean isSlideRaised = false;
@@ -166,25 +166,24 @@ public class TeleOpsLeagueOne extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
-            double leftFrontPower  = axial + lateral + yaw;
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
             // Output the safe vales to the motor drives.
             slideLeft.setPower(0);
@@ -197,63 +196,63 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
-            if(gamepad1.dpad_up) {
+            if (gamepad1.dpad_up) {
                 leftFrontDrive.setPower(0.1);
                 leftBackDrive.setPower(0.1);
                 rightFrontDrive.setPower(0.1);
                 rightBackDrive.setPower(0.1);
             }
 
-            if(gamepad1.dpad_down) {
+            if (gamepad1.dpad_down) {
                 leftFrontDrive.setPower(-0.1);
                 leftBackDrive.setPower(-0.1);
                 rightFrontDrive.setPower(-0.1);
                 rightBackDrive.setPower(-0.1);
             }
 
-            if(gamepad1.dpad_left) {
+            if (gamepad1.dpad_left) {
                 leftFrontDrive.setPower(-0.1);
                 leftBackDrive.setPower(0.1);
                 rightFrontDrive.setPower(0.1);
                 rightBackDrive.setPower(-0.1);
             }
 
-            if(gamepad1.dpad_left) {
+            if (gamepad1.dpad_left) {
                 leftFrontDrive.setPower(0.1);
                 leftBackDrive.setPower(-0.1);
                 rightFrontDrive.setPower(-0.1);
                 rightBackDrive.setPower(0.1);
             }
 
-            if(gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1) {
+            if (gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1) {
                 leftFrontDrive.setPower(0.0);
                 leftBackDrive.setPower(0.0);
                 rightFrontDrive.setPower(0.0);
                 rightBackDrive.setPower(0.0);
             }
             //Reach the Top basket
-            if(gamepad2.dpad_up && topServo.getPosition() < 0.33 && !isSlideRaised){
+            if (gamepad2.dpad_up && topServo.getPosition() < 0.33 && !isSlideRaised) {
                 //Raise the slide
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, 32, 10.0);
 
                 isSlideRaised = true;
             }
             //Bring the slide all the way down
-            if(gamepad2.dpad_up && isSlideRaised){
+            if (gamepad2.dpad_up && isSlideRaised) {
                 doubleEncoderDrive(slideLeft, slideRight, -0.6, -0.6, 32, 10.0);
 
                 isSlideRaised = false;
-               //Lower the slide
+                //Lower the slide
             }
 
             //Blue Bar to place the Specimen
-            if(gamepad2.right_stick_button){
+            if (gamepad2.right_stick_button) {
 
                 doubleDownDrive(slideLeft, slideRight, 0.2, 0.2, 3.6, 10.0);
                 //Lower the slide slightly
                 isSlideRaised = true;
             }
-            if(isSlideRaised){  //Hold the linear slide by powering the DC motors, when it went up. Otherwise slide will come down
+            if (isSlideRaised) {  //Hold the linear slide by powering the DC motors, when it went up. Otherwise slide will come down
                 slideLeft.setPower(0.05);
                 slideRight.setPower(0.05);
             }
@@ -261,20 +260,20 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if (gamepad2.b) {//Moving bottom servo to the clockwise direction
                 bottomServoPos = bottomServo.getPosition();
                 bottomServoPos += 0.001;
-                if(bottomServoPos >= 0.5)
+                if (bottomServoPos >= 0.5)
                     bottomServoPos = 0.5;
                 //When the pickup arm is horizontal then you are using the rotation of the arm
-                if(topServo.getPosition() > TOP_SERVO_INIT_POS)
+                if (topServo.getPosition() > TOP_SERVO_INIT_POS)
                     bottomServo.setPosition(bottomServoPos);
-                //If the arm is vertical the orientation/rotation of arm to the initial position
+                    //If the arm is vertical the orientation/rotation of arm to the initial position
                 else
                     bottomServo.setPosition(BOTTOM_SERVO_INIT_POS);
                 //Move attachment to the right
             }
-            if (gamepad2.x){ //Bottom servo moving counter clockwise direction
+            if (gamepad2.x) { //Bottom servo moving counter clockwise direction
                 bottomServoPos = bottomServo.getPosition();
                 bottomServoPos -= 0.001;
-                if(bottomServoPos <= 0.0)
+                if (bottomServoPos <= 0.0)
                     bottomServoPos = 0.0;
 
                 bottomServo.setPosition(bottomServoPos);
@@ -282,26 +281,26 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             }
 
             if (gamepad2.dpad_right && isArmUp) {   //Top Servo going down to pickup position
-                    topServo.setPosition(TOP_SERVO_PICKUP_POS);
-                    isArmUp = false;
-                    telemetry.addData("arm is DOWN is arm up = %b", isArmUp);
-                    telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
-                    telemetry.update();
-                    sleep(1000);
+                topServo.setPosition(TOP_SERVO_PICKUP_POS);
+                isArmUp = false;
+                telemetry.addData("arm is DOWN is arm up = %b", isArmUp);
+                telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
+                telemetry.update();
+                sleep(1000);
             }
-            if(gamepad2.dpad_right && !isArmUp){
-                    topServo.setPosition(TOP_SERVO_INIT_POS + 0.01);
-                    isArmUp = true;
-                    telemetry.addData("arm is UP is arm up = %b", isArmUp);
-                    telemetry.addData("topServoPos = ",  "%.2f", topServo.getPosition());
-                    telemetry.update();
-                    sleep(1000);
+            if (gamepad2.dpad_right && !isArmUp) {
+                topServo.setPosition(TOP_SERVO_INIT_POS + 0.01);
+                isArmUp = true;
+                telemetry.addData("arm is UP is arm up = %b", isArmUp);
+                telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
+                telemetry.update();
+                sleep(1000);
             }
 
 
             //top servo/Sample Pickup lever hovers over the block & move the left and right
             //claws facing down.
-            if (gamepad2.dpad_down){
+            if (gamepad2.dpad_down) {
                 topServo.setPosition(TOP_SERVO_HOVER_POS);
 
                 leftServo.setPosition(LEFT_SERVO_HOVER_POS);
@@ -317,18 +316,18 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 topServo.setPosition(topServoPos);
             }*/
 
-            if(gamepad2.dpad_left && isArmOpen == true) { // opening and closing
-                    leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
-                    rightServo.setPosition(RIGHT_SERVO_CLOSE_POS );
-                    isArmOpen = false;
-                    sleep(1000);
-                }
+            if (gamepad2.dpad_left && isArmOpen == true) { // opening and closing
+                leftServo.setPosition(LEFT_SERVO_CLOSE_POS);
+                rightServo.setPosition(RIGHT_SERVO_CLOSE_POS);
+                isArmOpen = false;
+                sleep(1000);
+            }
 
-            if(gamepad2.dpad_left && isArmOpen == false) {
-                    leftServo.setPosition(LEFT_SERVO_INIT_POS);
-                    rightServo.setPosition(RIGHT_SERVO_INIT_POS);
-                    isArmOpen = true;
-                    sleep(1000);
+            if (gamepad2.dpad_left && isArmOpen == false) {
+                leftServo.setPosition(LEFT_SERVO_INIT_POS);
+                rightServo.setPosition(RIGHT_SERVO_INIT_POS);
+                isArmOpen = true;
+                sleep(1000);
             }
            /*if(gamepad2.dpad_left) {  //Left Servo Closing Individual
                 leftServoPos = leftServo.getPosition();
@@ -338,9 +337,9 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             if(gamepad2.dpad_right) {  //Right Servo Closing Individual
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
-                rightServo.setPosition(rightServoPos);*/
-            }
-            if(gamepad2.left_stick_y > 0.1) {
+                rightServo.setPosition(rightServoPos);
+            }*/
+            if (gamepad2.left_stick_y > 0.1) {
                 //left and right servo slight open
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
@@ -356,17 +355,17 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 leftServo.setPosition(leftServoPos);
             }
 
-            if(gamepad2.right_stick_y > 0.1){
+            if (gamepad2.right_stick_y > 0.1) {
                 topServo.setPosition(TOP_SERVO_SAMPLE_PICKUP_POS);
             }
 
-            if(gamepad2.left_stick_button) {
+            if (gamepad2.left_stick_button) {
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, ARM_UP_BAR, 10.0);
                 isSlideRaised = true;
                 //move arm to where blue bar is
             }
 
-            if(gamepad2.back && isArmUp) {
+            if (gamepad2.back && isArmUp) {
                 topServo.setPosition(0.33);
                 telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
                 telemetry.update();
@@ -374,7 +373,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 sleep(2000);
             }
 
-            if(gamepad2.back && !isArmUp) {
+            if (gamepad2.back && !isArmUp) {
                 topServo.setPosition(TOP_SERVO_INIT_POS);
                 telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
                 telemetry.update();
@@ -385,25 +384,26 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-           //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-           // telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            // telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
             // Send telemetry message to signify robot running;
-            telemetry.addData("Left Slide Currently at",  " at %7d", slideLeft.getCurrentPosition());
-            telemetry.addData("Right Slide Currently at",  " at %7d ", slideRight.getCurrentPosition());
+            telemetry.addData("Left Slide Currently at", " at %7d", slideLeft.getCurrentPosition());
+            telemetry.addData("Right Slide Currently at", " at %7d ", slideRight.getCurrentPosition());
 
-            telemetry.addData("claw",  "  bottomServoPos  = %.2f", bottomServo.getPosition());
-            telemetry.addData("topServoPos = ",  "%.2f", topServo.getPosition());
+            telemetry.addData("claw", "  bottomServoPos  = %.2f", bottomServo.getPosition());
+            telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
 
 
-            telemetry.addData("Left Servo Position",  " at %7f", leftServo.getPosition());
-            telemetry.addData("Right Servo Position",  " at %7f", rightServo.getPosition());
+            telemetry.addData("Left Servo Position", " at %7f", leftServo.getPosition());
+            telemetry.addData("Right Servo Position", " at %7f", rightServo.getPosition());
 
             telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
         }
+    }
 
 
     public void encoderDrive(DcMotor slide, double speed,
