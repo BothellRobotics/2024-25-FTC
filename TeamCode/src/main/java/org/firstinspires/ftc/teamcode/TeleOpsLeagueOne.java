@@ -353,13 +353,13 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 //left and right servo slight open
                 rightServoPos = rightServo.getPosition();
                 rightServoPos += INCREMENT;
-               if(rightServoPos >= RIGHT_SERVO_SLIGHT_OPEN_POS)
+                if (rightServoPos >= RIGHT_SERVO_SLIGHT_OPEN_POS)
                     rightServoPos = RIGHT_SERVO_SLIGHT_OPEN_POS;
                 rightServo.setPosition(rightServoPos);
 
                 leftServoPos = leftServo.getPosition();
                 leftServoPos -= INCREMENT;
-               if(leftServoPos <= LEFT_SERVO_SLIGHT_OPEN_POS)
+                if (leftServoPos <= LEFT_SERVO_SLIGHT_OPEN_POS)
                     leftServoPos = LEFT_SERVO_SLIGHT_OPEN_POS;
 
                 leftServo.setPosition(leftServoPos);
@@ -373,6 +373,22 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 doubleEncoderDrive(slideLeft, slideRight, 0.625, 0.7, ARM_UP_BAR, 10.0);
                 isSlideRaised = true;
                 //move arm to where blue bar is
+            }
+
+            if(gamepad2.back && isArmUp) {
+                topServo.setPosition(0.33);
+                telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
+                telemetry.update();
+                isArmUp = false;
+                sleep(2000);
+            }
+
+            if(gamepad2.back && !isArmUp) {
+                topServo.setPosition(TOP_SERVO_INIT_POS);
+                telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
+                telemetry.update();
+                isArmUp = true;
+                sleep(2000);
             }
             // Move both servos to new position.  Assume servos are mirror image of each other.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
