@@ -289,7 +289,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
                 sleep(1000);
             }
             if (gamepad2.dpad_right && !isArmUp) {
-                topServo.setPosition(TOP_SERVO_INIT_POS + 0.01);
+                topServo.setPosition(TOP_SERVO_INIT_POS);
                 isArmUp = true;
                 telemetry.addData("arm is UP is arm up = %b", isArmUp);
                 telemetry.addData("topServoPos = ", "%.2f", topServo.getPosition());
