@@ -103,7 +103,7 @@ public class TeleOpsLeagueOne extends LinearOpMode {
     static final double LEFT_SERVO_SLIGHT_OPEN_POS = 0.185;
     static final double RIGHT_SERVO_SLIGHT_OPEN_POS = 0.08;
 
-    static final double ARM_UP_BAR = 16.0;
+    static final double ARM_UP_BAR = 10.0;
 
     @Override
     public void runOpMode() {
@@ -302,9 +302,9 @@ public class TeleOpsLeagueOne extends LinearOpMode {
             //claws facing down.
             if (gamepad2.dpad_down) {
                 topServo.setPosition(TOP_SERVO_HOVER_POS);
-
                 leftServo.setPosition(LEFT_SERVO_HOVER_POS);
                 rightServo.setPosition(RIGHT_SERVO_HOVER_POS);
+                isArmOpen = true;
             }
 
             /*if (gamepad2.dpad_up){    //top servo postition to leave cage
